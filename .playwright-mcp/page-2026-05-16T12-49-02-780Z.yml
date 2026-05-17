@@ -1,0 +1,130 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e10]: AngularApp
+      - generic [ref=e12]:
+        - link "Home" [ref=e13] [cursor=pointer]:
+          - /url: /home
+        - link "Examples" [ref=e14] [cursor=pointer]:
+          - /url: /examples
+  - main [ref=e15]:
+    - generic [ref=e18]:
+      - complementary [ref=e19]:
+        - generic [ref=e20]:
+          - heading "Examples" [level=2] [ref=e21]
+          - navigation [ref=e22]:
+            - link "Signals" [ref=e23] [cursor=pointer]:
+              - /url: /examples/signals
+              - img [ref=e24]
+              - generic [ref=e26]: Signals
+            - link "Forms" [ref=e27] [cursor=pointer]:
+              - /url: /examples/forms
+              - img [ref=e28]
+              - generic [ref=e30]: Forms
+            - link "HTTP" [ref=e31] [cursor=pointer]:
+              - /url: /examples/http
+              - img [ref=e32]
+              - generic [ref=e34]: HTTP
+            - link "Animations" [ref=e35] [cursor=pointer]:
+              - /url: /examples/animations
+              - img [ref=e36]
+              - generic [ref=e38]: Animations
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - heading "Animations Demo" [level=1] [ref=e43]
+          - paragraph [ref=e44]:
+            - text: Powered by animate.css and Angular
+            - code [ref=e45]: animate.enter
+            - text: /
+            - code [ref=e46]: animate.leave
+            - text: .
+        - generic [ref=e47]:
+          - heading "Attention Seekers" [level=2] [ref=e48]
+          - paragraph [ref=e49]: Click a button to trigger an animation on the Angular shield.
+          - img [ref=e52]
+          - generic [ref=e54]:
+            - button "Bounce" [ref=e55]
+            - button "Pulse" [ref=e56]
+            - button "Rubber Band" [ref=e57]
+            - button "Shake" [ref=e58]
+            - button "Swing" [ref=e59]
+            - button "Tada" [ref=e60]
+            - button "Wobble" [ref=e61]
+            - button "Jello" [ref=e62]
+            - button "Heart Beat" [ref=e63]
+            - button "Flip" [ref=e64]
+        - generic [ref=e65]:
+          - heading "Enter & Leave Animations" [level=2] [ref=e66]
+          - paragraph [ref=e67]:
+            - text: Toggle elements to see
+            - code [ref=e68]: animate.enter
+            - text: and
+            - code [ref=e69]: animate.leave
+            - text: in action. Angular waits for the leave animation to finish before removing the DOM element.
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - generic [ref=e72]:
+                - generic [ref=e73]: Fade In / Out
+                - button "Toggle" [ref=e74]
+              - img [ref=e78]
+            - generic [ref=e80]:
+              - generic [ref=e81]:
+                - generic [ref=e82]: Zoom In / Out
+                - button "Toggle" [ref=e83]
+              - img [ref=e87]
+            - generic [ref=e90]:
+              - generic [ref=e91]:
+                - generic [ref=e92]: Slide In / Out
+                - button "Toggle" [ref=e93]
+              - img [ref=e97]
+            - generic [ref=e99]:
+              - generic [ref=e100]:
+                - generic [ref=e101]: Flip In X / Out X
+                - button "Toggle" [ref=e102]
+              - img [ref=e106]
+            - generic [ref=e109]:
+              - generic [ref=e110]:
+                - generic [ref=e111]: Bounce In / Out
+                - button "Toggle" [ref=e112]
+              - img [ref=e116]
+            - generic [ref=e118]:
+              - generic [ref=e119]:
+                - generic [ref=e120]: Rotate In / Out
+                - button "Toggle" [ref=e121]
+              - img [ref=e125]
+            - generic [ref=e127]:
+              - generic [ref=e128]:
+                - generic [ref=e129]: Elastic / Light Speed
+                - button "Toggle" [ref=e130]
+              - img [ref=e134]
+        - generic [ref=e138]:
+          - 'heading "Same Element: Enter & Leave" [level=2] [ref=e139]'
+          - paragraph [ref=e140]:
+            - text: The same element animates in and out using
+            - code [ref=e141]: animate.enter
+            - text: and
+            - code [ref=e142]: animate.leave
+            - text: . Angular keeps the element in the DOM during the leave animation.
+          - button "Remove Element" [ref=e144]
+          - generic [ref=e146]:
+            - img [ref=e148]
+            - paragraph [ref=e150]: Hello Angular!
+            - paragraph [ref=e151]: I fade in from below
+        - generic [ref=e152]:
+          - heading "Animation Utilities" [level=2] [ref=e153]
+          - paragraph [ref=e154]: animate.css provides utility classes for speed and delays.
+          - generic [ref=e155]:
+            - generic [ref=e156]:
+              - generic [ref=e158]: F
+              - paragraph [ref=e159]: Fast
+              - paragraph [ref=e160]: animate__fast
+            - generic [ref=e161]:
+              - generic [ref=e163]: "N"
+              - paragraph [ref=e164]: Normal
+              - paragraph [ref=e165]: Default speed
+            - generic [ref=e166]:
+              - generic [ref=e168]: S
+              - paragraph [ref=e169]: Slow
+              - paragraph [ref=e170]: animate__slow

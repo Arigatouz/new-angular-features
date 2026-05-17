@@ -1,0 +1,44 @@
+<div class="max-w-3xl mx-auto">
+  <div class="mb-8 flex items-end justify-between">
+    <div>
+      <h1 class="text-3xl font-extrabold text-white tracking-tight">HTTP Demo</h1>
+      <p class="mt-2 text-[#a0a0a0]">Fetching data with <code class="text-[#dd0031] bg-[#2d2d2d] px-1.5 py-0.5 rounded text-xs">httpResource</code>.</p>
+    </div>
+    <button
+      (click)="reload()"
+      class="px-4 py-2 bg-[#2d2d2d] text-white text-sm font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d] flex items-center gap-2"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+      Reload
+    </button>
+  </div>
+
+  @if (jokes.isLoading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 border-2 border-[#dd0031] border-t-transparent rounded-full animate-spin"></div>
+      <span class="ml-3 text-[#a0a0a0]">Loading jokes...</span>
+    </div>
+  } @else if (jokes.error()) {
+    <div class="p-4 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-lg text-[#dd0031] text-sm">
+      Error: {{ jokes.error()?.message }}
+    </div>
+  } @else {
+    <div class="space-y-4">
+      @for (joke of jokes.value(); track joke.id) {
+        <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-6 hover:border-[#1976d2]/50 transition-colors">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-[#1976d2]/10 rounded-lg flex items-center justify-center shrink-0">
+              <span class="text-[#1976d2] font-bold text-sm">{{ joke.id }}</span>
+            </div>
+            <div>
+              <p class="text-white font-medium">{{ joke.setup }}</p>
+              <p class="mt-1 text-[#888] text-sm">{{ joke.punchline }}</p>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="text-center py-12 text-[#888]">No jokes found.</div>
+      }
+    </div>
+  }
+</div>

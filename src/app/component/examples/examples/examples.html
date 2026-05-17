@@ -1,0 +1,27 @@
+<div class="flex flex-col md:flex-row gap-8">
+  <!-- Side Navigation -->
+  <aside class="w-full md:w-64 shrink-0">
+    <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-4 sticky top-4">
+      <h2 class="text-white font-semibold text-lg mb-4 px-3">Examples</h2>
+      <nav class="space-y-1">
+        @for (item of navItems(); track item.path) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="bg-[#dd0031]/10 text-[#dd0031] border-[#dd0031]/30"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a0a0a0] hover:bg-[#2d2d2d] hover:text-white transition-all duration-200 border border-transparent"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon"></path>
+            </svg>
+            <span class="font-medium text-sm">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 min-w-0">
+    <router-outlet />
+  </div>
+</div>

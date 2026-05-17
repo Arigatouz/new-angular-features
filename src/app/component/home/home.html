@@ -1,0 +1,66 @@
+<div class="text-center">
+  <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#dd0031]/10 border border-[#dd0031]/20 rounded-full mb-6">
+    <span class="w-2 h-2 bg-[#dd0031] rounded-full animate-pulse"></span>
+    <span class="text-[#dd0031] text-xs font-semibold uppercase tracking-wider">Nightly Build</span>
+  </div>
+
+  <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+    Experimenting with <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#dd0031] to-[#1976d2]">Angular's Future</span>
+  </h1>
+  <p class="mt-4 text-lg text-[#a0a0a0] max-w-2xl mx-auto">
+    This app runs on Angular nightly builds straight from the source. We are kicking the tires on whatever is landing next.
+  </p>
+  <div class="mt-8 flex justify-center gap-4">
+    <a
+      routerLink="/examples"
+      class="inline-flex items-center px-5 py-3 bg-gradient-to-r from-[#dd0031] to-[#c3002f] text-white font-semibold rounded-lg hover:from-[#c3002f] hover:to-[#a00026] transition-all duration-200 shadow-lg shadow-[#dd0031]/20"
+      >See the Experiments</a>
+    <a
+      routerLink="/features"
+      class="inline-flex items-center px-5 py-3 bg-[#1a1a1a] text-[#e0e0e0] font-semibold rounded-lg hover:bg-[#2d2d2d] transition-all duration-200 border border-[#2d2d2d]"
+      >What is New</a>
+  </div>
+
+  <div class="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <div class="p-6 bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] hover:border-[#dd0031]/50 transition-colors">
+      <div class="w-12 h-12 bg-[#2d2d2d] rounded-lg flex items-center justify-center mb-4 mx-auto">
+        <svg class="w-6 h-6 text-[#dd0031]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+      </div>
+      <h3 class="text-white font-semibold text-lg">Signals All the Way</h3>
+      <p class="mt-2 text-[#888] text-sm">No more Zone.js hunting for changes. Fine-grained reactivity with signals, computed values, and effects. The framework finally feels reactive.</p>
+    </div>
+    <div class="p-6 bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] hover:border-[#1976d2]/50 transition-colors">
+      <div class="w-12 h-12 bg-[#2d2d2d] rounded-lg flex items-center justify-center mb-4 mx-auto">
+        <svg class="w-6 h-6 text-[#1976d2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+      </div>
+      <h3 class="text-white font-semibold text-lg">httpResource</h3>
+      <p class="mt-2 text-[#888] text-sm">Async data that behaves like a signal. Load, reload, and derive state from HTTP calls without the boilerplate of old patterns.</p>
+    </div>
+    <div class="p-6 bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] hover:border-[#4caf50]/50 transition-colors">
+      <div class="w-12 h-12 bg-[#2d2d2d] rounded-lg flex items-center justify-center mb-4 mx-auto">
+        <svg class="w-6 h-6 text-[#4caf50]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      </div>
+      <h3 class="text-white font-semibold text-lg">Native Animations</h3>
+      <p class="mt-2 text-[#888] text-sm">No more animation modules. Built-in enter and leave hooks let you drop in CSS animations directly. It just works.</p>
+    </div>
+  </div>
+
+  <div class="mt-12 p-6 bg-[#f59e0b]/5 rounded-xl border border-[#f59e0b]/30 max-w-3xl mx-auto">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 bg-[#f59e0b]/20 rounded-lg flex items-center justify-center shrink-0">
+        <svg class="w-6 h-6 text-[#f59e0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+      </div>
+      <div class="text-left">
+        <h3 class="text-[#f59e0b] font-bold text-lg flex items-center gap-2">
+          About This Build
+          <span class="px-2 py-0.5 bg-[#f59e0b]/20 text-[#f59e0b] text-xs font-bold rounded border border-[#f59e0b]/30 uppercase tracking-wider">Not Stable</span>
+        </h3>
+        <p class="mt-2 text-[#e0c090] text-sm leading-relaxed">
+          We are pulling Angular straight from the nightly builds on GitHub. That means bleeding edge features, occasional rough edges, and the chance to see where the framework is heading. If something breaks, it is because we are living on the edge. Check out the Examples page to see what we are currently playing with.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,130 @@
+<div class="p-5 bg-[#2d2d2d]/30 border border-[#2d2d2d] rounded-xl">
+  <h3 class="text-lg font-semibold text-white mb-2">Destructuring Comparison</h3>
+  <p class="text-[#a0a0a0] mb-6">
+    One major benefit of the <code class="bg-[#1a1a1a] px-1.5 py-0.5 rounded text-[#dd0031]">factory</code> style is
+    that it returns a plain object.
+    This means methods are closures that don't depend on <code
+    class="bg-[#1a1a1a] px-1.5 py-0.5 rounded text-[#dd0031]">this</code>, making them safe to destructure.
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Factory Service (Works) -->
+    <div class="space-y-4 p-4 bg-[#1a1a1a] rounded-lg border border-[#2d2d2d]">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-sm font-medium text-green-500">Factory Service (Safe)</h4>
+        <button
+          (click)="testFactoryDestructuring()"
+          class="px-3 py-1.5 text-xs bg-green-600/20 hover:bg-green-600/30 text-green-500 rounded border border-green-600/30 transition-colors font-mono"
+        >
+          Destructure &#123; increment &#125;
+        </button>
+      </div>
+
+      @if (factoryStatus(); as status) {
+        <div
+          [class]="status.success ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-[#dd0031]/10 text-[#dd0031] border-[#dd0031]/20'"
+          class="p-3 rounded-lg text-xs border"
+        >
+          <div class="font-bold mb-1">{{ status.success ? 'Success' : 'Failed' }}</div>
+          {{ status.message }}
+          <p class="mt-2 text-[#a0a0a0] leading-relaxed">
+            Methods are closures. You can pull them out of the service object and they still work perfectly.
+          </p>
+        </div>
+      }
+
+      <div class="mt-4">
+        <pre class="text-[10px] font-mono text-[#d4d4d4] bg-black/30 p-2 rounded">
+<span class="text-[#6a9955]">/* ✅ This works */</span>
+<span class="text-[#c586c0]">const</span> &#123; <span class="text-[#9cdcfe]">increment</span> &#125; = <span
+          class="text-[#9cdcfe]">factoryService</span>;
+<span class="text-[#dcdcaa]">increment</span>();</pre>
+      </div>
+    </div>
+
+    <!-- Normal Service (Fails) -->
+    <div class="space-y-4 p-4 bg-[#1a1a1a] rounded-lg border border-[#2d2d2d]">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-sm font-medium text-[#dd0031]">Normal Service (Breaks)</h4>
+        <button
+          (click)="testNormalDestructuring()"
+          class="px-3 py-1.5 text-xs bg-[#dd0031]/20 hover:bg-[#dd0031]/30 text-[#dd0031] rounded border border-[#dd0031]/30 transition-colors font-mono"
+        >
+          Destructure &#123; increment &#125;
+        </button>
+      </div>
+
+      @if (normalStatus(); as status) {
+        <div
+          [class]="status.success ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-[#dd0031]/10 text-[#dd0031] border-[#dd0031]/20'"
+          class="p-3 rounded-lg text-xs border"
+        >
+          <div class="font-bold mb-1">{{ status.success ? 'Unexpected' : 'Caught Error' }}</div>
+          {{ status.message }}
+          <p class="mt-2 text-[#a0a0a0] leading-relaxed">
+            Standard classes lose <code class="text-white">this</code> context when destructured.
+          </p>
+        </div>
+      }
+
+      <div class="mt-4">
+        <pre class="text-[10px] font-mono text-[#d4d4d4] bg-black/30 p-2 rounded">
+<span class="text-[#6a9955]">/* ❌ This breaks */</span>
+<span class="text-[#c586c0]">const</span> &#123; <span class="text-[#9cdcfe]">increment</span> &#125; = <span
+          class="text-[#9cdcfe]">normalService</span>;
+<span class="text-[#dcdcaa]">increment</span>(); <span class="text-[#6a9955]">// Error!</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="p-5 bg-[#2d2d2d]/30 border border-[#2d2d2d] rounded-xl">
+  <h3 class="text-lg font-semibold text-white mb-2">Factory Service Style</h3>
+  <p class="text-[#a0a0a0] mb-6">
+    This service is created using the <code class="bg-[#1a1a1a] px-1.5 py-0.5 rounded text-[#dd0031]">factory</code>
+    property of the <code class="bg-[#1a1a1a] px-1.5 py-0.5 rounded text-[#dd0031]">&#64;Service</code> decorator.
+  </p>
+
+  <div class="space-y-4">
+    <div class="flex gap-8">
+      <div>
+        <span class="text-sm text-[#a0a0a0] block mb-1">Count</span>
+        <span class="text-2xl font-bold text-white">{{ factoryService.count() }}</span>
+      </div>
+      <div>
+        <span class="text-sm text-[#a0a0a0] block mb-1">Doubled</span>
+        <span class="text-2xl font-bold text-[#dd0031]">{{ factoryService.doubled() }}</span>
+      </div>
+    </div>
+
+    <div class="flex gap-3 pt-2">
+      <button
+        (click)="factoryService.increment()"
+        class="px-4 py-2 bg-[#dd0031] hover:bg-[#c4002c] text-white rounded-lg font-medium transition-colors"
+      >
+        Increment
+      </button>
+      <button
+        (click)="factoryService.reset()"
+        class="px-4 py-2 bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white rounded-lg font-medium transition-colors border border-[#3d3d3d]"
+      >
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <h4 class="text-xs font-semibold text-[#a0a0a0] mb-3 uppercase tracking-wider font-mono">Implementation</h4>
+    <pre
+      class="bg-[#1a1a1a] p-4 rounded-lg overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed border border-[#2d2d2d] text-[#d4d4d4]">
+<span class="text-[#a0a0a0]">&#64;</span><span class="text-[#dd0031]">Service</span>(&#123;
+  <span class="text-[#9cdcfe]">factory</span>: () => &#123;
+    <span class="text-[#c586c0]">const</span> <span class="text-[#9cdcfe]">count</span> = signal(<span
+      class="text-[#b5cea8]">0</span>);
+    <span class="text-[#c586c0]">return</span> &#123;
+      <span class="text-[#9cdcfe]">increment</span>: () => count.update((<span
+      class="text-[#9cdcfe]">n</span>) => n + <span class="text-[#b5cea8]">1</span>),
+    &#125;;
+  &#125;,
+&#125;)</pre>
+  </div>
+</div>

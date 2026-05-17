@@ -1,0 +1,45 @@
+<div class="p-5 bg-[#2d2d2d]/30 border border-[#2d2d2d] rounded-xl">
+  <h3 class="text-lg font-semibold text-white mb-2">Normal Class Style</h3>
+  <p class="text-[#a0a0a0] mb-6">
+    This service is a standard class decorated with <code class="bg-[#1a1a1a] px-1.5 py-0.5 rounded text-[#dd0031]">&#64;Service()</code>.
+  </p>
+
+  <div class="space-y-4">
+    <div class="flex gap-8">
+      <div>
+        <span class="text-sm text-[#a0a0a0] block mb-1">Count</span>
+        <span class="text-2xl font-bold text-white">{{ service.count() }}</span>
+      </div>
+      <div>
+        <span class="text-sm text-[#a0a0a0] block mb-1">Doubled</span>
+        <span class="text-2xl font-bold text-[#dd0031]">{{ service.doubled() }}</span>
+      </div>
+    </div>
+
+    <div class="flex gap-3 pt-2">
+      <button
+        (click)="service.increment()"
+        class="px-4 py-2 bg-[#dd0031] hover:bg-[#c4002c] text-white rounded-lg font-medium transition-colors"
+      >
+        Increment
+      </button>
+      <button
+        (click)="service.reset()"
+        class="px-4 py-2 bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white rounded-lg font-medium transition-colors border border-[#3d3d3d]"
+      >
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <h4 class="text-xs font-semibold text-[#a0a0a0] mb-3 uppercase tracking-wider font-mono">Implementation</h4>
+    <pre class="bg-[#1a1a1a] p-4 rounded-lg overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed border border-[#2d2d2d] text-[#d4d4d4]">
+<span class="text-[#a0a0a0]">&#64;</span><span class="text-[#dd0031]">Service</span>()
+<span class="text-[#c586c0]">export class</span> <span class="text-[#4ec9b0]">NormalService</span> &#123;
+  <span class="text-[#9cdcfe]">increment</span>(): <span class="text-[#4ec9b0]">void</span> &#123;
+    <span class="text-[#c586c0]">this</span>.#count.update((<span class="text-[#9cdcfe]">n</span>) => n + <span class="text-[#b5cea8]">1</span>);
+  &#125;
+&#125;</pre>
+  </div>
+</div>

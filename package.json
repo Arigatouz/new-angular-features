@@ -6,30 +6,46 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint"
   },
   "private": true,
-  "packageManager": "npm@11.6.2",
+  "packageManager": "pnpm@11.1.2",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "lmdb",
+      "msgpackr-extract"
+    ]
+  },
   "dependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/compiler": "^21.2.0",
-    "@angular/core": "^21.2.0",
-    "@angular/forms": "^21.2.0",
-    "@angular/platform-browser": "^21.2.0",
-    "@angular/router": "^21.2.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "@angular/common": "github:angular/common-builds",
+    "@angular/compiler": "github:angular/compiler-builds",
+    "@angular/core": "github:angular/core-builds",
+    "@angular/forms": "github:angular/forms-builds",
+    "@angular/platform-browser": "github:angular/platform-browser-builds",
+    "@angular/router": "github:angular/router-builds",
+    "animate.css": "^4.1.1",
+    "rxjs": "~7.8.2",
+    "tslib": "^2.8.1",
+    "valibot": "^1.4.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.11",
+    "@angular-eslint/builder": "21.4.0",
+    "@angular/build": "next",
     "@angular/cli": "^21.2.11",
-    "@angular/compiler-cli": "^21.2.0",
-    "@tailwindcss/postcss": "^4.1.12",
-    "jsdom": "^28.0.0",
-    "postcss": "^8.5.3",
-    "prettier": "^3.8.1",
-    "tailwindcss": "^4.1.12",
-    "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "@angular/compiler-cli": "github:angular/compiler-cli-builds",
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/postcss": "^4.3.0",
+    "angular-eslint": "21.4.0",
+    "eslint": "^10.3.0",
+    "jsdom": "^28.1.0",
+    "postcss": "^8.5.14",
+    "prettier": "^3.8.3",
+    "tailwindcss": "^4.3.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "8.59.2",
+    "vitest": "^4.1.6"
   }
 }

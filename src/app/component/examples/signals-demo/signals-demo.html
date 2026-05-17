@@ -1,0 +1,51 @@
+<div class="max-w-2xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-extrabold text-white tracking-tight">Signals Demo</h1>
+    <p class="mt-2 text-[#a0a0a0]">Interactive demonstration of Angular Signals.</p>
+  </div>
+
+  <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-8">
+    <div class="text-center">
+      <p class="text-[#888] text-sm uppercase tracking-wider font-semibold mb-2">Counter</p>
+      <div class="text-6xl font-bold text-white mb-2">{{ count() }}</div>
+      <div class="flex items-center justify-center gap-2 text-sm">
+        <span class="px-2 py-1 rounded bg-[#2d2d2d] text-[#a0a0a0]">Doubled: {{ doubled() }}</span>
+        <span class="px-2 py-1 rounded bg-[#2d2d2d]" [class.text-[#4caf50]]="isEven()" [class.text-[#dd0031]]="!isEven()">
+          {{ isEven() ? 'Even' : 'Odd' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-center gap-3">
+      <button
+        (click)="decrement()"
+        class="px-5 py-2.5 bg-[#2d2d2d] text-white font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d]"
+      >
+        -
+      </button>
+      <button
+        (click)="reset()"
+        class="px-5 py-2.5 bg-[#2d2d2d] text-[#a0a0a0] font-medium rounded-lg hover:bg-[#3d3d3d] hover:text-white transition-colors border border-[#3d3d3d]"
+      >
+        Reset
+      </button>
+      <button
+        (click)="increment()"
+        class="px-5 py-2.5 bg-gradient-to-r from-[#dd0031] to-[#c3002f] text-white font-medium rounded-lg hover:from-[#c3002f] hover:to-[#a00026] transition-all shadow-lg shadow-[#dd0031]/20"
+      >
+        +
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-6">
+      <h3 class="text-white font-semibold mb-2">Signal</h3>
+      <p class="text-[#888] text-sm">A reactive primitive that holds a value. Use <code class="text-[#dd0031] bg-[#2d2d2d] px-1.5 py-0.5 rounded text-xs">set()</code>, <code class="text-[#dd0031] bg-[#2d2d2d] px-1.5 py-0.5 rounded text-xs">update()</code>, or <code class="text-[#dd0031] bg-[#2d2d2d] px-1.5 py-0.5 rounded text-xs">mutate()</code> to change it.</p>
+    </div>
+    <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-6">
+      <h3 class="text-white font-semibold mb-2">Computed</h3>
+      <p class="text-[#888] text-sm">A read-only signal derived from other signals. Automatically updates when dependencies change.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="p-6 bg-[#1a1a1a] border border-[#2d2d2d] rounded-xl max-w-3xl mx-auto my-5 text-white">
+  <div class="flex gap-2 mb-6 border-b border-[#2d2d2d] pb-3">
+    <button
+      (click)="selectTab('factory')"
+      [class]="selectedTab() === 'factory'
+        ? 'px-4 py-2 bg-[#dd0031]/10 text-[#dd0031] border border-[#dd0031]/30 rounded-lg font-medium transition-all duration-200'
+        : 'px-4 py-2 text-[#a0a0a0] hover:bg-[#2d2d2d] hover:text-white rounded-lg font-medium transition-all duration-200'"
+    >
+      Factory Service Style
+    </button>
+    <button
+      (click)="selectTab('normal')"
+      [class]="selectedTab() === 'normal'
+        ? 'px-4 py-2 bg-[#dd0031]/10 text-[#dd0031] border border-[#dd0031]/30 rounded-lg font-medium transition-all duration-200'
+        : 'px-4 py-2 text-[#a0a0a0] hover:bg-[#2d2d2d] hover:text-white rounded-lg font-medium transition-all duration-200'"
+    >
+      Normal Service Style
+    </button>
+    <button
+      (click)="selectTab('destructuring')"
+      [class]="selectedTab() === 'destructuring'
+        ? 'px-4 py-2 bg-[#dd0031]/10 text-[#dd0031] border border-[#dd0031]/30 rounded-lg font-medium transition-all duration-200'
+        : 'px-4 py-2 text-[#a0a0a0] hover:bg-[#2d2d2d] hover:text-white rounded-lg font-medium transition-all duration-200'"
+    >
+      Destructuring Benefit
+    </button>
+  </div>
+
+  <div class="min-h-[200px]">
+    @if (selectedTab() === 'factory') {
+      <app-factory-service-example />
+    } @else if (selectedTab() === 'normal') {
+      <app-normal-service-example />
+    } @else {
+      <app-factory-service-destructing-example />
+    }
+  </div>
+</div>
