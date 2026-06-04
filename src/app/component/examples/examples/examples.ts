@@ -41,5 +41,15 @@ export class Examples {
       label: 'Service Decorator',
       icon: 'M12 6.5l5 3v5l-5 3-5-3v-5l5-3z M12 6.5V3 M12 17.5V21 M7 9.5L4 8 M17 9.5l3-1.5 M7 14.5L4 16 M17 14.5l3 1.5 M9.5 10.5h5 M9.5 13.5h5 M8 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2 M18 3l.75 1.5L20.5 5.25l-1.75.75L18 7.5l-.75-1.5-1.75-.75 1.75-.75L18 3z',
     },
+    {
+      path: '/examples/foreign-component',
+      label: 'Foreign Component',
+      icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+    },
+    {
+      path: '/examples/web-mcp-form',
+      label: 'WebMCP Form',
+      icon: 'M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2M9 3a2 2 0 002 2h2a2 2 0 002-2M9 3a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+    },
   ]);
 }

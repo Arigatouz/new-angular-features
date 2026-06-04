@@ -1,4 +1,5 @@
-import { inject, InjectionToken, Service } from '@angular/core';
+import { inject, InjectionToken, Service, signal, Signal } from '@angular/core';
+import { CounterService } from './counter';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 1 — Define the types
@@ -6,7 +7,13 @@ import { inject, InjectionToken, Service } from '@angular/core';
 
 // The only two themes the app supports
 export type Theme = 'light' | 'dark';
-
+export type ThemeApi = {
+  theme: () => Theme; // Returns the current theme
+  number: () => number;
+  toggle: () => void; // Switches from light → dark or dark → light
+  setTheme: (theme: Theme) => void; // Lets you set a specific theme directly
+  isDark: () => boolean; // Convenience: true when the active theme is dark
+};
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 2 — Create a configuration token
 //
@@ -15,10 +22,34 @@ export type Theme = 'light' | 'dark';
 //
 // The factory inside InjectionToken sets the DEFAULT value ('light').
 // ─────────────────────────────────────────────────────────────────────────────
-export const DEFAULT_THEME = new InjectionToken<Theme>('DEFAULT_THEME', {
+@Service({autoProvided:false})
+export class CounterX {
+  count = signal(0)
+  increment(): void {
+    this.count.update((n) => n + 1);
+  }
+}
+
+export const DEFAULT_THEME = new InjectionToken<ThemeApi>('DEFAULT_THEME', {
   providedIn: 'root',
-  factory: () => 'light', // ← default starting theme for the whole app
+  factory: () => {
+    let current: Theme = 'light';
+    let numberService = inject(CounterX);
+    return {
+      theme: () => current,
+      number: () => numberService.count(),
+      toggle: () => {
+        current = numberService.count() % 7 === 0 ? 'light' : 'dark';
+      },
+      setTheme: (t) => {
+        current = t;
+      },
+      isDark: () => current === 'dark',
+    };
+  },
 });
+
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 3 — Build the service using @Service + factory
@@ -38,7 +69,7 @@ export const DEFAULT_THEME = new InjectionToken<Theme>('DEFAULT_THEME', {
   factory: () => {
     // ── Read configuration ──────────────────────────────────────────────────
     // inject() works here because factory() runs inside Angular's DI context
-    const startingTheme = inject(DEFAULT_THEME); // e.g. 'light'
+    const startingTheme = inject(DEFAULT_THEME).theme(); // e.g. 'light'
 
     // ── Private state ───────────────────────────────────────────────────────
     // This variable lives inside the closure.
@@ -76,7 +107,7 @@ export class ThemeService {
   // At runtime Angular never uses them — the factory return value is used instead.
   // The "!" tells TypeScript: "this will definitely exist, trust me."
   getTheme!: () => Theme;
-  toggle!:   () => void;
+  toggle!: () => void;
   setTheme!: (theme: Theme) => void;
-  isDark!:   () => boolean;
+  isDark!: () => boolean;
 }

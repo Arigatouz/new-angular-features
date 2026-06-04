@@ -1,0 +1,248 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div>
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-[#dd0031]/10 border border-[#dd0031]/20 flex items-center justify-center">
+        <svg class="w-4 h-4 text-[#dd0031]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2M9 3a2 2 0 002 2h2a2 2 0 002-2M9 3a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <h1 class="text-white text-xl font-semibold">WebMCP Signal Form</h1>
+      <span class="text-xs px-2 py-0.5 rounded-full bg-[#dd0031]/10 text-[#dd0031] border border-[#dd0031]/20 font-mono">v22 nightly</span>
+    </div>
+    <p class="text-[#a0a0a0] text-sm leading-relaxed">
+      Signal Forms wired to <code class="text-white bg-[#2d2d2d] px-1.5 py-0.5 rounded text-xs">provideExperimentalWebMcpForms</code> —
+      this form is automatically exposed as a WebMCP tool named
+      <code class="text-white bg-[#2d2d2d] px-1.5 py-0.5 rounded text-xs">createUser</code>
+      that AI agents can call to fill and submit it.
+    </p>
+  </div>
+
+  @if (submitted()) {
+    <div role="alert" class="flex items-center gap-3 bg-[#052e16] border border-[#16a34a]/30 rounded-lg px-4 py-3 text-sm text-[#4ade80]">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+      Form submitted — either by you or an AI agent via WebMCP!
+    </div>
+  }
+
+  <form [formRoot]="userForm" class="space-y-6" novalidate>
+
+    <!-- Section 1: Personal Info -->
+    <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-4">
+      <h2 class="text-white font-medium text-sm flex items-center gap-2">
+        <span class="w-5 h-5 rounded bg-[#dd0031]/20 flex items-center justify-center text-[#dd0031] text-xs font-bold">1</span>
+        Personal Information
+      </h2>
+
+      <!-- Name -->
+      <div class="space-y-1.5">
+        <label for="name-input" class="block text-xs font-medium text-[#a0a0a0]">Full Name</label>
+        <input
+          id="name-input"
+          type="text"
+          [formField]="userForm.name"
+          placeholder="Enter full name"
+          [attr.aria-invalid]="userForm.name().touched() && userForm.name().invalid()"
+          [attr.aria-describedby]="userForm.name().invalid() ? 'name-error' : null"
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+          [class.border-red-500]="userForm.name().touched() && userForm.name().invalid()"
+          [class.border-[#3d3d3d]]="!userForm.name().touched() || userForm.name().valid()"
+        />
+        @if (userForm.name().touched() && userForm.name().invalid()) {
+          <p id="name-error" role="alert" class="text-red-400 text-xs">
+            {{ userForm.name().errors()[0].message }}
+          </p>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="space-y-1.5">
+        <label for="email-input" class="block text-xs font-medium text-[#a0a0a0]">Email</label>
+        <input
+          id="email-input"
+          type="email"
+          [formField]="userForm.email"
+          placeholder="you@example.com"
+          [attr.aria-invalid]="userForm.email().touched() && userForm.email().invalid()"
+          [attr.aria-describedby]="userForm.email().invalid() ? 'email-error' : null"
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+          [class.border-red-500]="userForm.email().touched() && userForm.email().invalid()"
+          [class.border-[#3d3d3d]]="!userForm.email().touched() || userForm.email().valid()"
+        />
+        @if (userForm.email().touched() && userForm.email().invalid()) {
+          <p id="email-error" role="alert" class="text-red-400 text-xs">
+            {{ userForm.email().errors()[0].message }}
+          </p>
+        }
+      </div>
+
+      <!-- Age + Gender row -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1.5">
+          <label for="age-input" class="block text-xs font-medium text-[#a0a0a0]">Age</label>
+          <input
+            id="age-input"
+            type="number"
+            [formField]="userForm.age"
+            placeholder="25"
+            [attr.aria-invalid]="userForm.age().touched() && userForm.age().invalid()"
+            [attr.aria-describedby]="userForm.age().invalid() ? 'age-error' : null"
+            class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+            [class.border-red-500]="userForm.age().touched() && userForm.age().invalid()"
+            [class.border-[#3d3d3d]]="!userForm.age().touched() || userForm.age().valid()"
+          />
+          @if (userForm.age().touched() && userForm.age().invalid()) {
+            <p id="age-error" role="alert" class="text-red-400 text-xs">
+              {{ userForm.age().errors()[0].message }}
+            </p>
+          }
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="gender-select" class="block text-xs font-medium text-[#a0a0a0]">Gender</label>
+          <select
+            id="gender-select"
+            [formField]="userForm.gender"
+            [attr.aria-invalid]="userForm.gender().touched() && userForm.gender().invalid()"
+            class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white outline-none transition-colors focus:border-[#dd0031]/60 cursor-pointer"
+            [class.border-red-500]="userForm.gender().touched() && userForm.gender().invalid()"
+            [class.border-[#3d3d3d]]="!userForm.gender().touched() || userForm.gender().valid()"
+          >
+            <option value="" disabled>Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="non-binary">Non-binary</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+          @if (userForm.gender().touched() && userForm.gender().invalid()) {
+            <p role="alert" class="text-red-400 text-xs">
+              {{ userForm.gender().errors()[0].message }}
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Address -->
+    <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-4">
+      <h2 class="text-white font-medium text-sm flex items-center gap-2">
+        <span class="w-5 h-5 rounded bg-[#dd0031]/20 flex items-center justify-center text-[#dd0031] text-xs font-bold">2</span>
+        Address
+      </h2>
+
+      <!-- Street -->
+      <div class="space-y-1.5">
+        <label for="street-input" class="block text-xs font-medium text-[#a0a0a0]">Street</label>
+        <input
+          id="street-input"
+          type="text"
+          [formField]="userForm.address.street"
+          placeholder="123 Main St"
+          [attr.aria-invalid]="userForm.address.street().touched() && userForm.address.street().invalid()"
+          [attr.aria-describedby]="userForm.address.street().invalid() ? 'street-error' : null"
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+          [class.border-red-500]="userForm.address.street().touched() && userForm.address.street().invalid()"
+          [class.border-[#3d3d3d]]="!userForm.address.street().touched() || userForm.address.street().valid()"
+        />
+        @if (userForm.address.street().touched() && userForm.address.street().invalid()) {
+          <p id="street-error" role="alert" class="text-red-400 text-xs">
+            {{ userForm.address.street().errors()[0].message }}
+          </p>
+        }
+      </div>
+
+      <!-- City + State -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1.5">
+          <label for="city-input" class="block text-xs font-medium text-[#a0a0a0]">City</label>
+          <input
+            id="city-input"
+            type="text"
+            [formField]="userForm.address.city"
+            placeholder="City"
+            [attr.aria-invalid]="userForm.address.city().touched() && userForm.address.city().invalid()"
+            class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+            [class.border-red-500]="userForm.address.city().touched() && userForm.address.city().invalid()"
+            [class.border-[#3d3d3d]]="!userForm.address.city().touched() || userForm.address.city().valid()"
+          />
+          @if (userForm.address.city().touched() && userForm.address.city().invalid()) {
+            <p role="alert" class="text-red-400 text-xs">
+              {{ userForm.address.city().errors()[0].message }}
+            </p>
+          }
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="state-input" class="block text-xs font-medium text-[#a0a0a0]">State</label>
+          <input
+            id="state-input"
+            type="text"
+            [formField]="userForm.address.state"
+            placeholder="State"
+            [attr.aria-invalid]="userForm.address.state().touched() && userForm.address.state().invalid()"
+            class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+            [class.border-red-500]="userForm.address.state().touched() && userForm.address.state().invalid()"
+            [class.border-[#3d3d3d]]="!userForm.address.state().touched() || userForm.address.state().valid()"
+          />
+          @if (userForm.address.state().touched() && userForm.address.state().invalid()) {
+            <p role="alert" class="text-red-400 text-xs">
+              {{ userForm.address.state().errors()[0].message }}
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- ZIP -->
+      <div class="space-y-1.5">
+        <label for="zip-input" class="block text-xs font-medium text-[#a0a0a0]">ZIP Code</label>
+        <input
+          id="zip-input"
+          type="number"
+          [formField]="userForm.address.zip"
+          placeholder="12345"
+          [attr.aria-invalid]="userForm.address.zip().touched() && userForm.address.zip().invalid()"
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+          [class.border-red-500]="userForm.address.zip().touched() && userForm.address.zip().invalid()"
+          [class.border-[#3d3d3d]]="!userForm.address.zip().touched() || userForm.address.zip().valid()"
+        />
+        @if (userForm.address.zip().touched() && userForm.address.zip().invalid()) {
+          <p role="alert" class="text-red-400 text-xs">
+            {{ userForm.address.zip().errors()[0].message }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      [disabled]="userForm().invalid()"
+      class="w-full bg-[#dd0031] hover:bg-[#c3002f] disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-lg text-sm transition-colors duration-200 flex items-center justify-center gap-2"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+      Create User
+    </button>
+
+  </form>
+
+  <!-- WebMCP info banner -->
+  <div class="flex items-start gap-3 bg-[#0a0f1a] border border-[#3b82f6]/20 rounded-lg p-4">
+    <svg class="w-5 h-5 text-[#3b82f6] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <div class="text-sm space-y-1">
+      <p class="text-[#3b82f6] font-medium">AI-callable via WebMCP</p>
+      <p class="text-[#4b6a9a] leading-relaxed text-xs">
+        This form is registered as a WebMCP tool named
+        <code class="text-[#60a5fa] bg-[#0d1b2e] px-1 rounded">createUser</code>.
+        An AI agent can call it with parameters matching the form's data model —
+        Angular's Signal Forms schema tells the agent exactly which fields exist and their types,
+        producing a higher-quality tool description than the web standard alone.
+      </p>
+    </div>
+  </div>
+</div>

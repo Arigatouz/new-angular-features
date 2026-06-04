@@ -9,6 +9,8 @@ import { FormsDemo } from './component/examples/forms-demo/forms-demo';
 import { HttpDemo } from './component/examples/http-demo/http-demo';
 import { AnimationsDemo } from './component/examples/animations-demo/animations-demo';
 import { ServiceDecoratorContainer } from './component/examples/service-decorator-container/service-decorator-container';
+import { ForeignComponentWrapper } from './component/examples/foreign-component-wrapper/foreign-component-wrapper';
+import { WebMcpForm } from './component/examples/web-mcp-form/web-mcp-form';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -26,6 +28,8 @@ export const routes: Routes = [
       { path: 'http', component: HttpDemo },
       { path: 'animations', component: AnimationsDemo },
       { path: 'service-decorator-container', component: ServiceDecoratorContainer },
+      { path: 'foreign-component', component: ForeignComponentWrapper },
+      { path: 'web-mcp-form', component: WebMcpForm },
     ],
   },
 ];

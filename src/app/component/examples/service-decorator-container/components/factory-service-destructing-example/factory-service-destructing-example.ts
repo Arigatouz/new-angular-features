@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, injectAsync, signal } from '@angular/core';
 import { FactoryService } from '../../services/factory-service';
 import { NormalService } from '../../services/normal-service';
 
@@ -13,7 +13,7 @@ export type MessageStatus = { success: boolean; message: string };
 export class FactoryServiceDestructingExample {
   readonly factoryService = inject(FactoryService);
   readonly normalService = inject(NormalService);
-  
+
   readonly factoryStatus = signal<MessageStatus | null>(null);
   readonly normalStatus = signal<MessageStatus | null>(null);
 

@@ -27,9 +27,13 @@
     "@angular/platform-browser": "github:angular/platform-browser-builds",
     "@angular/router": "github:angular/router-builds",
     "animate.css": "^4.1.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "rxjs": "~7.8.2",
+    "svelte": "^5.55.9",
     "tslib": "^2.8.1",
-    "valibot": "^1.4.0"
+    "valibot": "^1.4.0",
+    "vue": "^3.5.34"
   },
   "devDependencies": {
     "@angular-eslint/builder": "21.4.0",
@@ -37,7 +41,10 @@
     "@angular/cli": "^21.2.11",
     "@angular/compiler-cli": "github:angular/compiler-cli-builds",
     "@eslint/js": "^10.0.1",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@tailwindcss/postcss": "^4.3.0",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
     "angular-eslint": "21.4.0",
     "eslint": "^10.3.0",
     "jsdom": "^28.1.0",

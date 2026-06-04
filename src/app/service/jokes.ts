@@ -9,7 +9,7 @@ export interface Joke {
 }
 
 @Service({
-  autoProvided:true,
+  autoProvided: true,
 })
 export class JokesService {
   readonly jokes = httpResource<Joke[]>(() => 'https://official-joke-api.appspot.com/random_ten', {
