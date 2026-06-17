@@ -1,5 +1,7 @@
-import { inject, InjectionToken, Service, signal, Signal } from '@angular/core';
+import { debounced, inject, InjectionToken, linkedSignal, Service, signal, Signal } from '@angular/core';
 import { CounterService } from './counter';
+import { AsyncSubject, BehaviorSubject, ReplaySubject, Subject, switchMap } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 1 — Define the types
@@ -22,13 +24,16 @@ export type ThemeApi = {
 //
 // The factory inside InjectionToken sets the DEFAULT value ('light').
 // ─────────────────────────────────────────────────────────────────────────────
-@Service({autoProvided:false})
+@Service({ autoProvided: false })
 export class CounterX {
-  count = signal(0)
+  count = signal(0);
   increment(): void {
     this.count.update((n) => n + 1);
   }
 }
+
+@Service()
+export class PaymentGateWay {}
 
 export const DEFAULT_THEME = new InjectionToken<ThemeApi>('DEFAULT_THEME', {
   providedIn: 'root',
@@ -49,8 +54,6 @@ export const DEFAULT_THEME = new InjectionToken<ThemeApi>('DEFAULT_THEME', {
   },
 });
 
-
-
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 3 — Build the service using @Service + factory
 //
@@ -63,6 +66,18 @@ export const DEFAULT_THEME = new InjectionToken<ThemeApi>('DEFAULT_THEME', {
 // It is only used as the DI lookup key (the "token").
 // What actually gets injected is the object returned by factory().
 // ─────────────────────────────────────────────────────────────────────────────
+
+class SingletonClassExporter {
+  check = false;
+  constructor(check: boolean) {
+    console.log('SingletonClassExporter created');
+    this.check = check;
+  }
+  value = this.check ? ' yes' : 'no';
+}
+
+const singleton = (check: boolean) => new SingletonClassExporter(check);
+
 @Service({
   autoProvided: true, // available everywhere — no need to add to providers[]
 
@@ -70,6 +85,8 @@ export const DEFAULT_THEME = new InjectionToken<ThemeApi>('DEFAULT_THEME', {
     // ── Read configuration ──────────────────────────────────────────────────
     // inject() works here because factory() runs inside Angular's DI context
     const startingTheme = inject(DEFAULT_THEME).theme(); // e.g. 'light'
+
+    const s = singleton(true);
 
     // ── Private state ───────────────────────────────────────────────────────
     // This variable lives inside the closure.
@@ -98,6 +115,7 @@ export const DEFAULT_THEME = new InjectionToken<ThemeApi>('DEFAULT_THEME', {
       isDark(): boolean {
         return current === 'dark';
       },
+      s,
     };
   },
 })
@@ -110,4 +128,19 @@ export class ThemeService {
   toggle!: () => void;
   setTheme!: (theme: Theme) => void;
   isDark!: () => boolean;
+  s!: SingletonClassExporter;
+}
+
+@Service()
+export class whatever {
+  theme = inject(ThemeService); //  will not do this coz the themeService is a factory !== new themeService()
+
+
+  // check the diff between AsyncSubject and Subject
+  sub = new AsyncSubject();
+  sub2 = new Subject()
+  sub3 = new BehaviorSubject("")
+  replay = new ReplaySubject()
+
+
 }

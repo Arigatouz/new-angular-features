@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, debounced, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { httpResource } from '@angular/common/http';
 
 interface NavItem {
   path: string;
@@ -15,6 +16,14 @@ interface NavItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Examples {
+  search = signal<string>('');
+  debouncedSearched = debounced(this.search, 2000);
+
+
+  userData = httpResource(()=> this.debouncedSearched.hasValue() ? `/api/user?search=${this.search}` : undefined)
+
+
+  
   readonly navItems = signal<NavItem[]>([
     {
       path: '/examples/signals',
@@ -50,6 +59,11 @@ export class Examples {
       path: '/examples/web-mcp-form',
       label: 'WebMCP Form',
       icon: 'M9 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2M9 3a2 2 0 002 2h2a2 2 0 002-2M9 3a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+    },
+    {
+      path: '/examples/catch-error',
+      label: 'catchError',
+      icon: 'M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z',
     },
   ]);
 }

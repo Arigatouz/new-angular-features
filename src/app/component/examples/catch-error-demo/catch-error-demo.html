@@ -1,0 +1,94 @@
+<div class="max-w-3xl">
+  <h1 class="text-2xl font-bold text-white mb-2">catchError must return an Observable</h1>
+
+  <div class="bg-[#1a1a1a] rounded-xl border border-[#dd0031]/40 p-4 mb-6">
+    <p class="text-[#d0d0d0] leading-relaxed">
+      <code class="text-[#dd0031] font-mono">catchError</code> must return an Observable.
+      You must return <code class="text-[#7dd3fc] font-mono">EMPTY</code>,
+      <code class="text-[#7dd3fc] font-mono">of(value)</code>, or
+      <code class="text-[#7dd3fc] font-mono">throwError(() =&gt; err)</code>.
+      Returning <code class="text-[#fbbf24] font-mono">undefined</code> does
+      <strong class="text-white">NOT</strong> fail silently — RxJS throws:
+      <span class="block mt-2 text-[#fca5a5] font-mono text-sm">
+        “You provided 'undefined' where a stream was expected.”
+      </span>
+    </p>
+  </div>
+
+  <p class="text-[#a0a0a0] mb-2 text-sm">
+    Every button fires the <strong class="text-white">same real</strong>
+    <code class="font-mono">HttpClient</code> request to a non-existent endpoint
+    (always <code class="font-mono text-[#fbbf24]">404</code>), then runs a different
+    <code class="font-mono">catchError</code> handler.
+  </p>
+  <p class="text-[#777] mb-2 text-xs">
+    💡 The network request is identical for all four — the 404 you see in DevTools is the raw
+    failure. <code class="font-mono">catchError</code> runs on the client <em>after</em> that, so
+    the difference shows up in the subscriber, not the Network tab. Each outcome is also logged to
+    the console tagged with its strategy.
+  </p>
+  <p class="text-[#666] text-xs font-mono mb-4 break-all">GET {{ endpoint }}</p>
+
+  <div class="flex flex-wrap gap-2 mb-6">
+    <button
+      (click)="run('empty')"
+      class="px-4 py-2 rounded-lg bg-[#2d2d2d] text-white hover:bg-[#3d3d3d] border border-[#3d3d3d] font-mono text-sm transition-colors"
+    >
+      return EMPTY
+    </button>
+    <button
+      (click)="run('of')"
+      class="px-4 py-2 rounded-lg bg-[#2d2d2d] text-white hover:bg-[#3d3d3d] border border-[#3d3d3d] font-mono text-sm transition-colors"
+    >
+      return of(fallback)
+    </button>
+    <button
+      (click)="run('throwError')"
+      class="px-4 py-2 rounded-lg bg-[#2d2d2d] text-white hover:bg-[#3d3d3d] border border-[#3d3d3d] font-mono text-sm transition-colors"
+    >
+      return throwError(() =&gt; err)
+    </button>
+    <button
+      (click)="run('undefined')"
+      class="px-4 py-2 rounded-lg bg-[#dd0031]/20 text-[#fca5a5] hover:bg-[#dd0031]/30 border border-[#dd0031]/40 font-mono text-sm transition-colors"
+    >
+      return undefined ❌
+    </button>
+    <button
+      (click)="runAll()"
+      class="px-4 py-2 rounded-lg bg-[#dd0031] text-white hover:bg-[#b80028] font-semibold text-sm transition-colors"
+    >
+      ▶ Run all four
+    </button>
+  </div>
+
+  <div class="space-y-3">
+    @for (s of order; track s) {
+      @let result = results()[s];
+      <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-4">
+        <div class="flex items-center justify-between mb-2">
+          <code class="text-sm font-mono text-[#7dd3fc]">{{ STRATEGY_LABELS[s] }}</code>
+          @if (!result) {
+            <span class="text-xs text-[#666]">not run yet</span>
+          }
+        </div>
+        @if (result) {
+          <div class="space-y-1 font-mono text-sm">
+            @for (entry of result.entries; track $index) {
+              <div
+                [class.text-emerald-400]="entry.kind === 'next'"
+                [class.text-sky-400]="entry.kind === 'complete'"
+                [class.text-red-400]="entry.kind === 'error'"
+              >
+                {{ entry.message }}
+              </div>
+            }
+            @if (result.entries.length === 0) {
+              <div class="text-[#666]">⏳ waiting for response…</div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
