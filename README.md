@@ -178,3 +178,8 @@ Just don't deploy it anywhere that matters.
 - [Angular CLI Overview](https://angular.dev/tools/cli)
 - [Nightly Build Artifacts](https://github.com/angular/core-builds)
 - [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill)   Claude Code skill that automates switching any Angular project to the nightly build
+
+## The Nightly Build Skill
+
+The [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill) is a Claude Code skill that automates the entire migration to Angular's nightly build   just say *"switch to nightly angular"* and it rewrites your `package.json`, handles pnpm quirks, upgrades TypeScript, and verifies the install.
+No manual editing, no hunting for the right GitHub artifact URLs   it does the heavy lifting so you can focus on exploring new APIs.
