@@ -1,13 +1,13 @@
 # ⚗️ Angular Nightly Experiments
 
-> **⚠️ UNSTABLE — Here be dragons.**
+> **⚠️ UNSTABLE   Here be dragons.**
 > This project runs on the Angular **nightly build** pulled directly from the Angular team's GitHub build artifacts. APIs change without notice, things break, and that's the whole point.
 
 ---
 
 ## What This Repo Is
 
-Angular ships a stable release roughly every six months. But between releases, the team merges new features into `main` daily — and those builds are immediately available if you know where to look.
+Angular ships a stable release roughly every six months. But between releases, the team merges new features into `main` daily   and those builds are immediately available if you know where to look.
 
 This repo is a personal lab for exploring those features *before* they land in a stable release. Think of it as living on the bleeding edge of Angular development: you get first access to the newest APIs, but you also get the bugs, the breaking changes, and the occasional build that just doesn't work.
 
@@ -42,7 +42,9 @@ That's it. Stable. Boring. Perfect for production.
 
 ## Installing the Angular Nightly Build
 
-The nightly build is not on npm — it lives in GitHub build artifact repositories that the Angular team publishes after every successful CI run. To use it, you point your dependencies directly at those repos.
+The nightly build is not on npm   it lives in GitHub build artifact repositories that the Angular team publishes after every successful CI run. To use it, you point your dependencies directly at those repos.
+
+> **Want an AI agent to do this for you?** Check out the [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill) repo   it's a Claude Code skill that automates the entire migration. Just say *"switch to nightly angular"* and it rewrites your `package.json`, handles the pnpm quirks, upgrades TypeScript, and verifies the install. No manual editing required.
 
 ```bash
 # Install the nightly CLI (published to npm under the "next" tag)
@@ -83,9 +85,9 @@ pnpm install
 
 ## What I'm Experimenting With
 
-These are the features being tracked in this repo — things that are already merged into `main` but not yet in a stable release.
+These are the features being tracked in this repo   things that are already merged into `main` but not yet in a stable release.
 
-### Signal Forms — `@angular/forms/signals`
+### Signal Forms   `@angular/forms/signals`
 
 Reactive, signal-native forms. Already graduated to `@publicApi 22.0` in the nightly. Zero `FormControl` boilerplate, deep TypeScript inference, and conditional rules via `when`.
 
@@ -98,7 +100,7 @@ readonly f = form(signal({ email: '', password: '' }), {
 });
 ```
 
-### WebMCP Tools — `@angular/core`
+### WebMCP Tools   `@angular/core`
 
 Expose Angular services and Signal Forms as AI-callable tools via the Web Model Context Protocol. An AI agent can literally call your form's submit action.
 
@@ -115,9 +117,9 @@ bootstrapApplication(AppComponent, {
 });
 ```
 
-### `foreignImports` — Cross-Framework Rendering
+### `foreignImports`   Cross-Framework Rendering
 
-Render React, Vue, or any other framework component inside an Angular template — without `CUSTOM_ELEMENTS_SCHEMA`, `viewChild`, or manual lifecycle hooks. The compiler handles it.
+Render React, Vue, or any other framework component inside an Angular template   without `CUSTOM_ELEMENTS_SCHEMA`, `viewChild`, or manual lifecycle hooks. The compiler handles it.
 
 ```typescript
 import { foreignImport } from '@angular/core'; // not yet in public API
@@ -163,7 +165,7 @@ Navigate to `http://localhost:4200/` after starting the dev server.
 
 **For learning, contributing to Angular, or just being curious about where the framework is headed? Be my guest.**
 
-The nightly build is how you stay ahead of the curve — you'll understand new APIs before the blog posts are written, you'll hit the bugs before everyone else does, and occasionally you'll find something that shapes how you think about building apps entirely.
+The nightly build is how you stay ahead of the curve   you'll understand new APIs before the blog posts are written, you'll hit the bugs before everyone else does, and occasionally you'll find something that shapes how you think about building apps entirely.
 
 Just don't deploy it anywhere that matters.
 
@@ -172,6 +174,7 @@ Just don't deploy it anywhere that matters.
 ## Resources
 
 - [Angular Stable Docs](https://angular.dev)
-- [Angular GitHub — `main` branch](https://github.com/angular/angular)
+- [Angular GitHub   `main` branch](https://github.com/angular/angular)
 - [Angular CLI Overview](https://angular.dev/tools/cli)
 - [Nightly Build Artifacts](https://github.com/angular/core-builds)
+- [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill)   Claude Code skill that automates switching any Angular project to the nightly build
