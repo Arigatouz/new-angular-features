@@ -1,0 +1,114 @@
+<div class="space-y-6">
+  <!-- Info banner -->
+  <div class="flex items-start gap-3 bg-[#0a0f1a] border border-[#dd0031]/20 rounded-lg p-4">
+    <svg class="w-4 h-4 text-[#dd0031] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <p class="text-[#a0a0a0] text-xs leading-relaxed">
+      Uses <code class="text-[#dd0031] bg-[#1a0005] px-1 rounded">applyEach()</code> to validate every item in a
+      signal array. Add or remove entries at runtime — the form schema adapts automatically.
+    </p>
+  </div>
+
+  @if (submitted()) {
+    <div role="alert" class="flex items-center gap-3 bg-[#052e16] border border-[#16a34a]/30 rounded-lg px-4 py-3 text-sm text-[#4ade80]">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+      Skills saved — {{ skillCount() }} {{ skillCount() === 1 ? 'entry' : 'entries' }} submitted!
+    </div>
+  }
+
+  <form [formRoot]="skillsForm" class="space-y-3" novalidate>
+
+    @for (skill of skillsForm; track $index; let i = $index) {
+      <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-[#a0a0a0]">Skill #{{ i + 1 }}</span>
+          @if (skillCount() > 1) {
+            <button
+              type="button"
+              (click)="removeSkill(i)"
+              class="text-xs text-[#555] hover:text-red-400 transition-colors"
+              [attr.aria-label]="'Remove skill ' + (i + 1)"
+            >
+              Remove
+            </button>
+          }
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Skill name -->
+          <div class="space-y-1.5">
+            <label [for]="'skill-name-' + i" class="block text-xs font-medium text-[#c0c0c0]">Name</label>
+            <input
+              [id]="'skill-name-' + i"
+              type="text"
+              [formField]="skill.name"
+              placeholder="e.g. TypeScript"
+              class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+              [class.border-red-500]="skill.name().touched() && skill.name().invalid()"
+              [class.border-[#3d3d3d]]="!skill.name().touched() || skill.name().valid()"
+            />
+            @if (skill.name().touched() && skill.name().invalid()) {
+              <p role="alert" class="text-red-400 text-xs">
+                {{ skill.name().errors()[0].message }}
+              </p>
+            }
+          </div>
+
+          <!-- Skill level -->
+          <div class="space-y-1.5">
+            <label [for]="'skill-level-' + i" class="block text-xs font-medium text-[#c0c0c0]">Level</label>
+            <select
+              [id]="'skill-level-' + i"
+              [formField]="skill.level"
+              class="w-full bg-[#0f0f0f] border border-[#3d3d3d] rounded-lg px-3 py-2 text-sm text-white outline-none transition-colors focus:border-[#dd0031]/60 cursor-pointer"
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="expert">Expert</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="flex gap-3">
+      @if (canAdd()) {
+        <button
+          type="button"
+          (click)="addSkill()"
+          class="flex items-center gap-2 px-4 py-2 border border-dashed border-[#3d3d3d] text-[#a0a0a0] hover:border-[#dd0031]/50 hover:text-white text-sm rounded-lg transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Add skill
+        </button>
+      }
+
+      <button
+        type="submit"
+        [disabled]="skillsForm().invalid()"
+        class="flex-1 bg-[#dd0031] hover:bg-[#c3002f] disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-2 rounded-lg text-sm transition-colors duration-200"
+      >
+        Save {{ skillCount() }} {{ skillCount() === 1 ? 'Skill' : 'Skills' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Live state -->
+  <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-2">
+    <div class="flex items-center justify-between">
+      <h3 class="text-white text-sm font-medium">Live Array State</h3>
+      <div class="flex items-center gap-3 text-xs">
+        <span [class.text-[#4ade80]]="skillsForm().valid()" [class.text-[#555]]="!skillsForm().valid()">
+          {{ skillsForm().valid() ? '✓ valid' : '✗ invalid' }}
+        </span>
+        <span class="text-[#555]">{{ skillCount() }} items</span>
+      </div>
+    </div>
+    <pre class="bg-[#0f0f0f] rounded-lg p-4 text-xs text-[#a0a0a0] overflow-x-auto border border-[#2d2d2d]">{{ skillsForm().value() | json }}</pre>
+  </div>
+</div>

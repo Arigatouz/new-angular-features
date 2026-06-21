@@ -1,0 +1,133 @@
+<div class="space-y-6">
+  <!-- Info banner -->
+  <div class="flex items-start gap-3 bg-[#0a0f1a] border border-[#dd0031]/20 rounded-lg p-4">
+    <svg class="w-4 h-4 text-[#dd0031] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <p class="text-[#a0a0a0] text-xs leading-relaxed">
+      Uses <code class="text-[#dd0031] bg-[#1a0005] px-1 rounded">form()</code> with a schema function —
+      each field is a typed <code class="text-[#dd0031] bg-[#1a0005] px-1 rounded">FieldTree</code> bound via
+      <code class="text-[#dd0031] bg-[#1a0005] px-1 rounded">[formField]</code>.
+      Validation runs reactively; submit only fires when valid.
+    </p>
+  </div>
+
+  @if (submitted()) {
+    <div role="alert" class="flex items-center gap-3 bg-[#052e16] border border-[#16a34a]/30 rounded-lg px-4 py-3 text-sm text-[#4ade80]">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+      Profile saved successfully!
+    </div>
+  }
+
+  <form [formRoot]="profileForm" class="space-y-4" novalidate>
+    <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-4">
+
+      <!-- Username -->
+      <div class="space-y-1.5">
+        <label for="sf-username" class="block text-xs font-medium text-[#c0c0c0]">Username</label>
+        <input
+          id="sf-username"
+          type="text"
+          [formField]="profileForm.username"
+          placeholder="e.g. angular_dev"
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+          [class.border-red-500]="profileForm.username().touched() && profileForm.username().invalid()"
+          [class.border-[#3d3d3d]]="!profileForm.username().touched() || profileForm.username().valid()"
+        />
+        @if (profileForm.username().touched() && profileForm.username().invalid()) {
+          <p role="alert" class="text-red-400 text-xs">
+            {{ profileForm.username().errors()[0].message }}
+          </p>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="space-y-1.5">
+        <label for="sf-email" class="block text-xs font-medium text-[#c0c0c0]">Email</label>
+        <input
+          id="sf-email"
+          type="email"
+          [formField]="profileForm.email"
+          placeholder="you@example.com"
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60"
+          [class.border-red-500]="profileForm.email().touched() && profileForm.email().invalid()"
+          [class.border-[#3d3d3d]]="!profileForm.email().touched() || profileForm.email().valid()"
+        />
+        @if (profileForm.email().touched() && profileForm.email().invalid()) {
+          <p role="alert" class="text-red-400 text-xs">
+            {{ profileForm.email().errors()[0].message }}
+          </p>
+        }
+      </div>
+
+      <!-- Role -->
+      <div class="space-y-1.5">
+        <label for="sf-role" class="block text-xs font-medium text-[#c0c0c0]">Role</label>
+        <select
+          id="sf-role"
+          [formField]="profileForm.role"
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white outline-none transition-colors focus:border-[#dd0031]/60 cursor-pointer"
+          [class.border-red-500]="profileForm.role().touched() && profileForm.role().invalid()"
+          [class.border-[#3d3d3d]]="!profileForm.role().touched() || profileForm.role().valid()"
+        >
+          <option value="" disabled>Select a role</option>
+          <option value="developer">Developer</option>
+          <option value="designer">Designer</option>
+          <option value="manager">Manager</option>
+          <option value="devops">DevOps</option>
+        </select>
+        @if (profileForm.role().touched() && profileForm.role().invalid()) {
+          <p role="alert" class="text-red-400 text-xs">
+            {{ profileForm.role().errors()[0].message }}
+          </p>
+        }
+      </div>
+
+      <!-- Bio -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center">
+          <label for="sf-bio" class="block text-xs font-medium text-[#c0c0c0]">Bio <span class="text-[#555]">(optional)</span></label>
+          <span class="text-xs text-[#555]">{{ profileForm.bio().value().length }} / 200</span>
+        </div>
+        <textarea
+          id="sf-bio"
+          rows="3"
+          [formField]="profileForm.bio"
+          placeholder="Tell us about yourself..."
+          class="w-full bg-[#0f0f0f] border rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60 resize-none"
+          [class.border-red-500]="profileForm.bio().touched() && profileForm.bio().invalid()"
+          [class.border-[#3d3d3d]]="!profileForm.bio().touched() || profileForm.bio().valid()"
+        ></textarea>
+        @if (profileForm.bio().touched() && profileForm.bio().invalid()) {
+          <p role="alert" class="text-red-400 text-xs">
+            {{ profileForm.bio().errors()[0].message }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="profileForm().invalid()"
+      class="w-full bg-[#dd0031] hover:bg-[#c3002f] disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-lg text-sm transition-colors duration-200"
+    >
+      Save Profile
+    </button>
+  </form>
+
+  <!-- Live state -->
+  <div class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-2">
+    <div class="flex items-center justify-between">
+      <h3 class="text-white text-sm font-medium">Live Form State</h3>
+      <div class="flex items-center gap-3 text-xs">
+        <span [class.text-[#4ade80]]="profileForm().valid()" [class.text-[#555]]="!profileForm().valid()">
+          {{ profileForm().valid() ? '✓ valid' : '✗ invalid' }}
+        </span>
+        <span class="text-[#555]">touched: {{ profileForm().touched() }}</span>
+      </div>
+    </div>
+    <pre class="bg-[#0f0f0f] rounded-lg p-4 text-xs text-[#a0a0a0] overflow-x-auto border border-[#2d2d2d]">{{ profileForm().value() | json }}</pre>
+  </div>
+</div>

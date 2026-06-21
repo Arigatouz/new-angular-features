@@ -1,35 +1,37 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
+import { SignalForms } from './signal-forms/signal-forms';
+import { DynamicSignalForms } from './dynamic-signal-forms/dynamic-signal-forms';
 
-interface FormModel {
-  name: string;
-  email: string;
-  message: string;
-}
-
+type formType = 'signal-forms' | 'dynamic-signal-forms';
+type tab = {
+  id: formType;
+  label: string;
+  description: string;
+};
 @Component({
   selector: 'app-forms-demo',
-  imports: [FormsModule, JsonPipe],
+  imports: [SignalForms, DynamicSignalForms],
   templateUrl: './forms-demo.html',
   styleUrl: './forms-demo.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormsDemo {
-  readonly form = signal<FormModel>({
-    name: '',
-    email: '',
-    message: '',
-  });
+  readonly activeTab = signal<formType>('signal-forms');
 
-  readonly submitted = signal(false);
+  readonly tabs: tab[] = [
+    {
+      id: 'signal-forms',
+      label: 'Signal Forms',
+      description: 'Typed fields with built-in validation via form() and schema',
+    },
+    {
+      id: 'dynamic-signal-forms',
+      label: 'Dynamic Signal Forms',
+      description: 'Array fields added/removed at runtime with applyEach()',
+    },
+  ];
 
-  updateField<K extends keyof FormModel>(field: K, value: string): void {
-    this.form.update((f) => ({ ...f, [field]: value }));
-  }
-
-  onSubmit(): void {
-    this.submitted.set(true);
-    setTimeout(() => this.submitted.set(false), 3000);
+  setTab(tab: formType): void {
+    this.activeTab.set(tab);
   }
 }
