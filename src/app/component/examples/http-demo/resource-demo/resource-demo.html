@@ -1,0 +1,98 @@
+<div>
+  <div class="mb-6 flex items-center justify-between">
+    <span
+      class="inline-flex items-center gap-2 px-3 py-1 bg-[#1976d2]/10 border border-[#1976d2]/30 rounded-full text-[#1976d2] text-xs font-mono">
+      resource()
+    </span>
+    <button
+      (click)="reload()"
+      class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d] flex items-center gap-2"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Reload
+    </button>
+    <button
+      (click)="increment()"
+      class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d] flex items-center gap-2"
+    >Increment (count: {{ count() }})
+    </button>
+    <button
+      (click)="abort()"
+      [disabled]="!jokesResource.isLoading()"
+      class="px-3 py-1.5 bg-[#dd0031]/20 text-[#dd0031] text-xs font-medium rounded-lg hover:bg-[#dd0031]/30 transition-colors border border-[#dd0031]/40 flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+    >Abort
+    </button>
+  </div>
+
+  <!-- Code Example -->
+  <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
+    <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
+      <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
+      <span class="text-[#1976d2] text-xs font-mono">&#64;angular/core</span>
+    </div>
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span
+      class="text-[#569cd6]">import</span> <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">resource</span> <span
+      class="text-[#d4d4d4]">&#125;</span> <span class="text-[#569cd6]">from</span> <span class="text-[#ce9178]">'&#64;angular/core'</span><span
+      class="text-[#d4d4d4]">;</span>
+
+<span class="text-[#9cdcfe]">jokes</span> <span class="text-[#d4d4d4]">=</span> <span
+        class="text-[#dcdcaa]">resource</span><span class="text-[#d4d4d4]">&lt;</span><span
+        class="text-[#4ec9b0]">Joke</span><span class="text-[#d4d4d4]">[], &#123;&#125;&gt;(&#123;</span>
+  <span class="text-[#9cdcfe]">params</span><span class="text-[#d4d4d4]">:</span> <span class="text-[#d4d4d4]">() =&gt; (&#123;&#125;),</span>
+  <span class="text-[#9cdcfe]">loader</span><span class="text-[#d4d4d4]">:</span> <span
+        class="text-[#569cd6]">async</span> <span class="text-[#d4d4d4]">(&#123;</span> <span class="text-[#9cdcfe]">abortSignal</span> <span
+        class="text-[#d4d4d4]">&#125;)</span> <span class="text-[#d4d4d4]">=&gt; &#123;</span>
+    <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">res</span> <span
+        class="text-[#d4d4d4]">=</span> <span class="text-[#569cd6]">await</span> <span
+        class="text-[#dcdcaa]">fetch</span><span class="text-[#d4d4d4]">(</span><span class="text-[#ce9178]">'https://api.example.com/jokes'</span><span
+        class="text-[#d4d4d4]">,</span>
+      <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">signal</span><span class="text-[#d4d4d4]">:</span> <span
+        class="text-[#9cdcfe]">abortSignal</span> <span class="text-[#d4d4d4]">&#125;);</span>
+    <span class="text-[#569cd6]">return</span> <span class="text-[#9cdcfe]">res</span><span
+        class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">json</span><span
+        class="text-[#d4d4d4]">() </span><span class="text-[#569cd6]">as</span> <span
+        class="text-[#4ec9b0]">Promise</span><span class="text-[#d4d4d4]">&lt;</span><span
+        class="text-[#4ec9b0]">Joke</span><span class="text-[#d4d4d4]">[]&gt;;</span>
+  <span class="text-[#d4d4d4]">&#125;,</span>
+<span class="text-[#d4d4d4]">&#125;);</span>
+
+<span class="text-[#6a9955]">// params() returning undefined pauses loading</span>
+<span class="text-[#6a9955]">// abortSignal cancels in-flight requests on re-run</span></code></pre>
+  </div>
+
+  @if (jokesResource.status() === 'idle') {
+    <div class="flex items-center justify-center py-16 text-[#a0a0a0] text-sm">
+      Request aborted — click Increment or Reload to resume.
+    </div>
+  } @else if (jokesResource.isLoading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 border-2 border-[#1976d2] border-t-transparent rounded-full animate-spin"></div>
+      <span class="ml-3 text-[#a0a0a0]">Loading jokes...</span>
+    </div>
+  } @else if (jokesResource.error()) {
+    <div class="p-4 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-lg text-[#dd0031] text-sm">
+      Error: {{ jokesResource.error() }}
+    </div>
+  } @else {
+    <div class="space-y-3">
+      @for (joke of jokesResource.value(); track joke.id) {
+        <div class="bg-[#111] rounded-xl border border-[#2d2d2d] p-5 hover:border-[#1976d2]/40 transition-colors">
+          <div class="flex items-start gap-4">
+            <div class="w-9 h-9 bg-[#1976d2]/10 rounded-lg flex items-center justify-center shrink-0">
+              <span class="text-[#1976d2] font-bold text-xs">{{ joke.id }}</span>
+            </div>
+            <div>
+              <p class="text-white font-medium text-sm">{{ joke.setup }}</p>
+              <p class="mt-1 text-[#888] text-sm">{{ joke.punchline }}</p>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="text-center py-12 text-[#888]">No jokes found.</div>
+      }
+    </div>
+  }
+</div>
