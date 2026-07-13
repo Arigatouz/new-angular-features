@@ -19,11 +19,10 @@ export class Examples {
   search = signal<string>('');
   debouncedSearched = debounced(this.search, 2000);
 
+  userData = httpResource(() =>
+    this.debouncedSearched.hasValue() ? `/api/user?search=${this.search}` : undefined,
+  );
 
-  userData = httpResource(()=> this.debouncedSearched.hasValue() ? `/api/user?search=${this.search}` : undefined)
-
-
-  
   readonly navItems = signal<NavItem[]>([
     {
       path: '/examples/signals',
@@ -64,6 +63,11 @@ export class Examples {
       path: '/examples/catch-error',
       label: 'catchError',
       icon: 'M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z',
+    },
+    {
+      path: '/examples/temp',
+      label: 'Temp',
+      icon: 'M12 3a2 2 0 00-2 2v7.76a4 4 0 104 0V5a2 2 0 00-2-2z M12 11v4',
     },
   ]);
 }

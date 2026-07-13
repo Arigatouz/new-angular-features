@@ -9,6 +9,7 @@ import {
   required,
 } from '@angular/forms/signals';
 import { JsonPipe } from '@angular/common';
+import { FieldPlaceholderDirective } from './field-placeholder.directive';
 import { signalFormSchema } from './signalform.schema';
 
 export interface ProfileModel {
@@ -20,12 +21,12 @@ export interface ProfileModel {
 
 @Component({
   selector: 'app-signal-forms',
-  imports: [FormRoot, FormField, JsonPipe],
+  imports: [FormRoot, FormField, FieldPlaceholderDirective, JsonPipe],
   templateUrl: './signal-forms.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignalForms {
-  readonly submitted = signal(false);
+  readonly submitted = signal<boolean>(false);
 
   readonly #model = signal<ProfileModel>({
     username: '',
@@ -34,15 +35,12 @@ export class SignalForms {
     bio: '',
   });
 
-  readonly profileForm = form(
-    this.#model,signalFormSchema,
-    {
-      submission: {
-        action: async () => {
-          this.submitted.set(true);
-          setTimeout(() => this.submitted.set(false), 3000);
-        },
+  readonly profileForm = form(this.#model, signalFormSchema, {
+    submission: {
+      action: async (): Promise<void> => {
+        this.submitted.set(true);
+        setTimeout(() => this.submitted.set(false), 3000);
       },
     },
-  );
+  });
 }

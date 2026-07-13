@@ -12,6 +12,7 @@ import { ServiceDecoratorContainer } from './component/examples/service-decorato
 import { ForeignComponentWrapper } from './component/examples/foreign-component-wrapper/foreign-component-wrapper';
 import { WebMcpForm } from './component/examples/web-mcp-form/web-mcp-form';
 import { CatchErrorDemo } from './component/examples/catch-error-demo/catch-error-demo';
+import { TempComponent } from './component/examples/temp-component/temp-component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: 'foreign-component', component: ForeignComponentWrapper },
       { path: 'web-mcp-form', component: WebMcpForm },
       { path: 'catch-error', component: CatchErrorDemo },
+      { path: 'temp', component: TempComponent },
     ],
   },
 ];

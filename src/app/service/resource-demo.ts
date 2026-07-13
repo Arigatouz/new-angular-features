@@ -1,29 +1,27 @@
-import { debounced, inject, Injector, resource, Service, Signal, signal } from '@angular/core';
+import { inject, Injector, resource, Service, Signal, signal } from '@angular/core';
 import { Joke } from './jokes';
 import { JOKES_API } from './http-demo-service';
-import { number } from 'valibot';
+import { parse } from 'valibot';
+
+export interface WikiRecentChange {
+  title: string;
+  user: string;
+  comment: string;
+  wiki: string;
+  type: 'edit' | 'new' | 'categorize' | 'log';
+  timestamp: number;
+  server_url: string;
+  namespace: number;
+  length?: { old: number; new: number };
+}
+
+export const WIKI_STREAM_URL = 'https://stream.wikimedia.org/v2/stream/recentchange';
 
 @Service({
   autoProvided: false,
 })
 export class ResourceDemoService {
   readonly #injector = inject(Injector);
-
-  pureJokeDataResource = resource({
-    loader: () => fetch(`${JOKES_API.JOKE_API_10_JOKES}`).then((response) => response.json()),
-  });
-
-  asyncAwaitJokeDataResourceWithParameter = (jokeCount: Signal<number | null>) => {
-    return resource<Joke[], { count: number | null }>({
-      params: () => ({ count: jokeCount() }),
-      loader: async ({ params }) => {
-        if (params.count === null) return [];
-
-        const response = await fetch(`${JOKES_API.GET_JOKES_WITH_DYNAMIC_NUMBERS(params.count)}`);
-        return await response.json();
-      },
-    });
-  };
 
   #manualAbortController = new AbortController();
 
@@ -32,35 +30,169 @@ export class ResourceDemoService {
     this.#manualAbortController = new AbortController();
   }
 
-  jokeResourceWithAbortSignal = (jokeCount: Signal<number | null>) => {
-    return resource<Joke[], { count: number | null } | undefined>({
-      params: () => ({ count: jokeCount() }),
+  pureJokeDataResource = resource({
+    loader: (): Promise<Joke[]> =>
+      fetch(`${JOKES_API.JOKE_API_10_JOKES}`).then((response) => response.json()),
+  });
+
+  asyncAwaitJokeDataResourceWithParameter = (jokeCount: Signal<number | undefined>) => {
+    return resource<Joke[], { count: number } | undefined>({
+      params: () => (jokeCount() !== undefined ? { count: jokeCount()! } : undefined),
+      defaultValue: [],
+      loader: async ({ params }) => {
+        const response = await fetch(`${JOKES_API.GET_JOKES_WITH_DYNAMIC_NUMBERS(params.count)}`);
+        return await response.json();
+      },
+    })
+  };
+
+  jokeResourceWithAbortSignal = (jokeCount: Signal<number | undefined>) => {
+    return resource<Joke[], { count: number } | undefined>({
+      params: () => (jokeCount() !== undefined ? { count: jokeCount()! } : undefined),
+      defaultValue: [],
       loader: async ({ params, abortSignal }) => {
-        if (params.count === null) return [];
+        abortSignal.addEventListener(
+          'abort',
+          () => {
+            console.log(`Request aborted: ${abortSignal.reason}`);
+          },
+          { once: true },
+        );
 
         const manualSignal = this.#manualAbortController.signal;
-        const combined = AbortSignal.any([abortSignal, manualSignal]);
-
-        abortSignal.addEventListener('abort', () => {
-          console.log('🛑 aborted! reason:', abortSignal.reason);
-        });
+        const combinedAbortSignals = AbortSignal.any([abortSignal, manualSignal]);
 
         await new Promise<void>((resolve, reject) => {
           const timer = setTimeout(resolve, 2000);
-          combined.addEventListener('abort', () => {
-            clearTimeout(timer);
-            reject(combined.reason);
-          });
+          combinedAbortSignals.addEventListener(
+            'abort',
+            () => {
+              clearTimeout(timer);
+              reject(combinedAbortSignals.reason);
+            },
+            { once: true },
+          );
         });
 
-        const response = await fetch(
-          `${JOKES_API.GET_JOKES_WITH_DYNAMIC_NUMBERS(params.count)}`,
-          { signal: combined },
-        );
+        const response = await fetch(`${JOKES_API.GET_JOKES_WITH_DYNAMIC_NUMBERS(params.count)}`, {
+          signal: combinedAbortSignals,
+        });
         return await response.json();
       },
     });
   };
+
+  // Async generator — yields one joke at a time with a 2s gap between each.
+  async *#jokeGenerator(count: number, abortSignal: AbortSignal): AsyncGenerator<Joke> {
+    for (let i = 0; i < count; i++) {
+      if (abortSignal.aborted) return;
+
+      if (i > 0) {
+        // Delay between jokes so the streaming effect is visible.
+        await new Promise<void>((resolve, reject) => {
+          const timer = setTimeout(resolve, 2000);
+          abortSignal.addEventListener(
+            'abort',
+            () => {
+              clearTimeout(timer);
+              reject(abortSignal.reason);
+            },
+            { once: true },
+          );
+        });
+        if (abortSignal.aborted) return;
+      }
+
+      const res = await fetch(JOKES_API.GET_JOKES_WITH_DYNAMIC_NUMBERS(1), { signal: abortSignal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const [joke] = await res.json();
+      yield joke;
+    }
+  }
+
+  jokeStreamResource = (jokeCount: Signal<number | undefined>) => {
+    return resource<Joke[], { count: number } | undefined>({
+      params: () => {
+        const count = jokeCount();
+        return count !== undefined && count > 0 ? { count } : undefined;
+      },
+      defaultValue: [],
+      debugName: 'JokeStreamResource',
+      stream: async ({ params, abortSignal }) => {
+        const generator = this.#jokeGenerator(params.count, abortSignal);
+
+        // Pull the first joke before returning — keeps resource in 'loading' until real data arrives.
+        const { value: firstJoke, done } = await generator.next();
+        if (done || !firstJoke) throw new Error('No jokes returned');
+
+        const accumulated = signal<{ value: Joke[] } | { error: Error }>({ value: [firstJoke] });
+
+        // Consume the rest with for await...of in a fire-and-forget IIFE.
+        (async () => {
+          try {
+            for await (const joke of generator) {
+              accumulated.update((prev) => ({
+                value: [...('value' in prev ? prev.value : []), joke],
+              }));
+            }
+          } catch (err) {
+            if (!abortSignal.aborted) {
+              accumulated.set({ error: err instanceof Error ? err : new Error(String(err)) });
+            }
+          }
+        })().then(r => console.log('Joke stream finished', r));
+
+        return accumulated;
+      },
+    });
+  };
+
+  // ── Real SSE stream: Wikimedia EventStreams ──────────────────────────
+  // Connects to live Wikipedia edits via Server-Sent Events.
+  // No params → stream starts once and runs until the resource is destroyed.
+  // EventSource is closed via abortSignal when the component is destroyed.
+  wikiEditStreamResource = resource<WikiRecentChange[], Record<never, never>>({
+    params: () => ({}),
+    defaultValue: [],
+    debugName: 'WikiEditStream',
+    stream: ({ abortSignal }) => {
+      const editsSignal = signal<{ value: WikiRecentChange[] } | { error: Error }>({ value: [] });
+
+      const source = new EventSource(WIKI_STREAM_URL);
+
+      // Angular fires abortSignal when the resource is destroyed or reloaded.
+      // EventSource has no native AbortSignal support — close it manually.
+      abortSignal.addEventListener('abort', () => source.close(), { once: true });
+
+      source.onmessage = (event: MessageEvent) => {
+        if (abortSignal.aborted) {
+          source.close();
+          return;
+        }
+        try {
+          const edit = JSON.parse(event.data as string) as WikiRecentChange;
+          // Filter to main namespace (0) articles only for a cleaner feed.
+          if (edit.namespace !== 0) return;
+          editsSignal.update((prev) => ({
+            value: [edit, ...('value' in prev ? prev.value : [])].slice(0, 20),
+          }));
+        } catch {
+          /* ignore malformed events */
+        }
+      };
+
+      source.onerror = () => {
+        if (!abortSignal.aborted) {
+          editsSignal.set({
+            error: new Error('EventSource connection lost — reload to reconnect'),
+          });
+        }
+        source.close();
+      };
+
+      return editsSignal;
+    },
+  });
 
   // jokeDataResource = resource<Joke[], { count: number }>({
   //   // ── BaseResourceOptions ──────────────────────────────────────────────

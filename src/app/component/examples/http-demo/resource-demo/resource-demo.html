@@ -25,6 +25,11 @@
       class="px-3 py-1.5 bg-[#dd0031]/20 text-[#dd0031] text-xs font-medium rounded-lg hover:bg-[#dd0031]/30 transition-colors border border-[#dd0031]/40 flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
     >Abort
     </button>
+    <button
+      (click)="setSignalWithUndefined()"
+      class="px-3 py-1.5 bg-[#dd0031]/20 text-[#dd0031] text-xs font-medium rounded-lg hover:bg-[#dd0031]/30 transition-colors border border-[#dd0031]/40 flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+    >Set params with undefined
+    </button>
   </div>
 
   <!-- Code Example -->
@@ -95,4 +100,206 @@
       }
     </div>
   }
+</div>
+
+<!-- ── stream resource section ────────────────────────────────────── -->
+<div class="mt-10 pt-8 border-t border-[#2d2d2d]">
+
+  <div class="mb-6 flex items-center justify-between">
+    <span
+      class="inline-flex items-center gap-2 px-3 py-1 bg-[#9c27b0]/10 border border-[#9c27b0]/30 rounded-full text-[#9c27b0] text-xs font-mono">
+      resource() stream
+    </span>
+    <span class="text-[#a0a0a0] text-xs font-mono">
+      {{ jokeStreamResource.value().length }}&nbsp;/&nbsp;{{ streamCount() ?? 0 }} streamed
+    </span>
+    <button
+      (click)="reloadStream()"
+      class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d] flex items-center gap-2"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Restart
+    </button>
+    <button
+      (click)="incrementStream()"
+      class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d]"
+    >
+      Increment (count: {{ streamCount() }})
+    </button>
+    <button
+      (click)="setStreamUndefined()"
+      class="px-3 py-1.5 bg-[#9c27b0]/20 text-[#9c27b0] text-xs font-medium rounded-lg hover:bg-[#9c27b0]/30 transition-colors border border-[#9c27b0]/40"
+    >
+      Set undefined (idle)
+    </button>
+  </div>
+
+  <!-- Code snippet -->
+  <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
+    <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
+      <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
+      <span class="text-[#9c27b0] text-xs font-mono">&#64;angular/core — stream</span>
+    </div>
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span class="text-[#569cd6]">import</span> <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">resource</span><span class="text-[#d4d4d4]">,</span> <span class="text-[#9cdcfe]">signal</span> <span class="text-[#d4d4d4]">&#125;</span> <span class="text-[#569cd6]">from</span> <span class="text-[#ce9178]">'&#64;angular/core'</span><span class="text-[#d4d4d4]">;</span>
+
+<span class="text-[#6a9955]">// stream: async → resource stays 'loading' until the Promise resolves with the Signal.</span>
+<span class="text-[#6a9955]">// After that, every Signal write updates resource.value() automatically.</span>
+<span class="text-[#9cdcfe]">jokes</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">resource</span><span class="text-[#d4d4d4]">&#40;&#123;</span>
+  <span class="text-[#9cdcfe]">stream</span><span class="text-[#d4d4d4]">:</span> <span class="text-[#569cd6]">async</span> <span class="text-[#d4d4d4]">(&#123;</span> <span class="text-[#9cdcfe]">abortSignal</span> <span class="text-[#d4d4d4]">&#125;)</span> <span class="text-[#d4d4d4]">=&gt; &#123;</span>
+    <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">first</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#569cd6]">await</span> <span class="text-[#dcdcaa]">fetchOneJoke</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">abortSignal</span><span class="text-[#d4d4d4]">);</span>
+    <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">s</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">signal</span><span class="text-[#d4d4d4]">(&#123;</span> <span class="text-[#9cdcfe]">value</span><span class="text-[#d4d4d4]">:</span> <span class="text-[#d4d4d4]">[</span><span class="text-[#9cdcfe]">first</span><span class="text-[#d4d4d4]">]</span> <span class="text-[#d4d4d4]">&#125;);</span>
+    <span class="text-[#6a9955]">// fire-and-forget: push more items into the signal</span>
+    <span class="text-[#d4d4d4]">(</span><span class="text-[#569cd6]">async</span> <span class="text-[#d4d4d4]">()</span> <span class="text-[#d4d4d4]">=&gt; &#123;</span> <span class="text-[#6a9955]">/* stream remaining... */</span> <span class="text-[#d4d4d4]">&#125;)();</span>
+    <span class="text-[#569cd6]">return</span> <span class="text-[#9cdcfe]">s</span><span class="text-[#d4d4d4]">;</span>  <span class="text-[#6a9955]">// resource watches this signal from here on</span>
+  <span class="text-[#d4d4d4]">&#125;,</span>
+<span class="text-[#d4d4d4]">&#125;);</span></code></pre>
+  </div>
+
+  @if (jokeStreamResource.status() === 'idle') {
+    <div class="flex items-center justify-center py-16 text-[#a0a0a0] text-sm">
+      Idle — set a count above to start streaming.
+    </div>
+  } @else if (jokeStreamResource.isLoading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 border-2 border-[#9c27b0] border-t-transparent rounded-full animate-spin"></div>
+      <span class="ml-3 text-[#a0a0a0]">Fetching first joke...</span>
+    </div>
+  } @else if (jokeStreamResource.error()) {
+    <div class="p-4 bg-[#9c27b0]/10 border border-[#9c27b0]/30 rounded-lg text-[#ce93d8] text-sm">
+      Error: {{ jokeStreamResource.error()?.message }}
+    </div>
+  } @else {
+    <div class="space-y-3">
+      @for (joke of jokeStreamResource.value(); track joke.id) {
+        <div class="bg-[#111] rounded-xl border border-[#2d2d2d] p-5 hover:border-[#9c27b0]/40 transition-colors">
+          <div class="flex items-start gap-4">
+            <div class="w-9 h-9 bg-[#9c27b0]/10 rounded-lg flex items-center justify-center shrink-0">
+              <span class="text-[#9c27b0] font-bold text-xs">{{ joke.id }}</span>
+            </div>
+            <div>
+              <p class="text-white font-medium text-sm">{{ joke.setup }}</p>
+              <p class="mt-1 text-[#888] text-sm">{{ joke.punchline }}</p>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="text-center py-12 text-[#888]">No jokes yet.</div>
+      }
+
+      @if (jokeStreamResource.value().length < (streamCount() ?? 0)) {
+        <div class="flex items-center gap-3 px-5 py-4 bg-[#9c27b0]/5 border border-[#9c27b0]/20 rounded-xl text-[#a0a0a0] text-sm">
+          <div class="w-4 h-4 border-2 border-[#9c27b0] border-t-transparent rounded-full animate-spin shrink-0"></div>
+          Streaming next joke... ({{ jokeStreamResource.value().length }}&nbsp;/&nbsp;{{ streamCount() }})
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- ── Real SSE: Wikimedia EventStreams ───────────────────────────── -->
+<div class="mt-10 pt-8 border-t border-[#2d2d2d]">
+
+  <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+    <div class="flex items-center gap-3">
+      <span
+        class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-900/30 border border-emerald-700/40 rounded-full text-emerald-400 text-xs font-mono">
+        resource() stream — real SSE
+      </span>
+      <span class="text-[#a0a0a0] text-xs">
+        Live Wikipedia edits &bull; <span class="text-emerald-400 font-mono">stream.wikimedia.org</span>
+      </span>
+    </div>
+    <div class="flex items-center gap-2">
+      @if (wikiEditStream.isLoading()) {
+        <span class="text-xs text-emerald-400 font-mono animate-pulse">Connecting...</span>
+      } @else if (wikiEditStream.hasValue()) {
+        <span class="flex items-center gap-1.5 text-xs text-emerald-400 font-mono">
+          <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          LIVE &bull; {{ wikiEdits().length }} edits received
+        </span>
+      }
+      <button
+        (click)="reloadWiki()"
+        class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d]"
+      >Reconnect</button>
+      <button
+        (click)="destroyWiki()"
+        class="px-3 py-1.5 bg-emerald-900/20 text-emerald-400 text-xs font-medium rounded-lg hover:bg-emerald-900/40 transition-colors border border-emerald-700/40"
+      >Disconnect</button>
+    </div>
+  </div>
+
+  <!-- Code snippet -->
+  <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
+    <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
+      <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
+      <span class="text-emerald-400 text-xs font-mono">EventSource → Signal → resource()</span>
+    </div>
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span class="text-[#569cd6]">import</span> <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">resource</span><span class="text-[#d4d4d4]">,</span> <span class="text-[#9cdcfe]">signal</span> <span class="text-[#d4d4d4]">&#125;</span> <span class="text-[#569cd6]">from</span> <span class="text-[#ce9178]">'&#64;angular/core'</span><span class="text-[#d4d4d4]">;</span>
+
+<span class="text-[#6a9955]">// stream: synchronous → resource resolves immediately with [].
+// EventSource fires onmessage → signal updates → resource.value() updates.</span>
+<span class="text-[#9cdcfe]">wikiEdits</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">resource</span><span class="text-[#d4d4d4]">&#40;&#123;</span>
+  <span class="text-[#9cdcfe]">stream</span><span class="text-[#d4d4d4]">:</span> <span class="text-[#d4d4d4]">(&#123;</span> <span class="text-[#9cdcfe]">abortSignal</span> <span class="text-[#d4d4d4]">&#125;)</span> <span class="text-[#d4d4d4]">=&gt; &#123;</span>
+    <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">s</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">signal</span><span class="text-[#d4d4d4]">(&#123;</span> <span class="text-[#9cdcfe]">value</span><span class="text-[#d4d4d4]">: []</span> <span class="text-[#d4d4d4]">&#125;);</span>
+    <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">src</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#569cd6]">new</span> <span class="text-[#4ec9b0]">EventSource</span><span class="text-[#d4d4d4]">(</span><span class="text-[#ce9178]">WIKI_STREAM_URL</span><span class="text-[#d4d4d4]">);</span>
+    <span class="text-[#9cdcfe]">abortSignal</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">addEventListener</span><span class="text-[#d4d4d4]">(</span><span class="text-[#ce9178]">'abort'</span><span class="text-[#d4d4d4]">,</span> <span class="text-[#d4d4d4]">()</span> <span class="text-[#d4d4d4]">=&gt;</span> <span class="text-[#9cdcfe]">src</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">close</span><span class="text-[#d4d4d4]">(),</span> <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">once</span><span class="text-[#d4d4d4]">:</span> <span class="text-[#569cd6]">true</span> <span class="text-[#d4d4d4]">&#125;);</span>
+    <span class="text-[#9cdcfe]">src</span><span class="text-[#d4d4d4]">.</span><span class="text-[#9cdcfe]">onmessage</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">e</span><span class="text-[#d4d4d4]">)</span> <span class="text-[#d4d4d4]">=&gt;</span>
+      <span class="text-[#9cdcfe]">s</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">update</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">prev</span> <span class="text-[#d4d4d4]">=&gt; (&#123;</span>
+        <span class="text-[#9cdcfe]">value</span><span class="text-[#d4d4d4]">: [</span><span class="text-[#dcdcaa]">JSON</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">parse</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">e</span><span class="text-[#d4d4d4]">.</span><span class="text-[#9cdcfe]">data</span><span class="text-[#d4d4d4]">),</span> <span class="text-[#d4d4d4]">...</span><span class="text-[#9cdcfe]">prev</span><span class="text-[#d4d4d4]">.</span><span class="text-[#9cdcfe]">value</span><span class="text-[#d4d4d4]">].</span><span class="text-[#dcdcaa]">slice</span><span class="text-[#d4d4d4]">(</span><span class="text-[#b5cea8]">0</span><span class="text-[#d4d4d4]">,</span> <span class="text-[#b5cea8]">20</span><span class="text-[#d4d4d4]">)</span>
+      <span class="text-[#d4d4d4]">&#125;));</span>
+    <span class="text-[#569cd6]">return</span> <span class="text-[#9cdcfe]">s</span><span class="text-[#d4d4d4]">;</span>  <span class="text-[#6a9955]">// Angular watches this Signal forever</span>
+  <span class="text-[#d4d4d4]">&#125;,</span>
+<span class="text-[#d4d4d4]">&#125;);</span></code></pre>
+  </div>
+
+  @if (wikiEditStream.error()) {
+    <div class="p-4 bg-red-900/20 border border-red-700/40 rounded-lg text-red-400 text-sm flex items-center justify-between">
+      <span>{{ wikiEditStream.error()?.message }}</span>
+      <button (click)="reloadWiki()" class="underline text-xs">Reconnect</button>
+    </div>
+  } @else {
+    @if (wikiEdits().length === 0) {
+      <div class="flex items-center justify-center py-16">
+        <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <span class="ml-3 text-[#a0a0a0] text-sm">Waiting for Wikipedia edits...</span>
+      </div>
+    } @else {
+      <div class="space-y-2">
+        @for (edit of wikiEdits(); track edit.title+Math.floor(Math.random()*1000)) {
+          <div class="bg-[#111] rounded-xl border border-[#2d2d2d] px-4 py-3 hover:border-emerald-700/40 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="shrink-0 mt-0.5">
+                @if (edit.type === 'new') {
+                  <span class="px-1.5 py-0.5 bg-emerald-900/40 text-emerald-400 text-[10px] font-bold rounded">NEW</span>
+                } @else {
+                  <span class="px-1.5 py-0.5 bg-blue-900/40 text-blue-400 text-[10px] font-bold rounded">EDIT</span>
+                }
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-white font-medium text-sm truncate">{{ edit.title }}</p>
+                <p class="text-[#888] text-xs mt-0.5 truncate">
+                  <span class="text-[#a0a0a0]">{{ edit.user }}</span>
+                  @if (edit.comment) { &mdash; {{ edit.comment }} }
+                </p>
+              </div>
+              <div class="shrink-0 text-right">
+                <p class="text-emerald-500 text-[10px] font-mono">{{ edit.wiki }}</p>
+                @if (edit.length) {
+                  <p class="text-[#555] text-[10px] font-mono">
+                    {{ edit.length.new - edit.length.old > 0 ? '+' : '' }}{{ edit.length.new - edit.length.old }} bytes
+                  </p>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
 </div>

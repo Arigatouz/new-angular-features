@@ -51,34 +51,113 @@
     <option value="5">5 jokes</option>
     <option value="10">10 jokes</option>
   </select>
+  <div class="relative">
+    @if (jokes.isLoading()) {
+      <div class="fixed inset-0 p-4 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-lg text-[#dd0031] text-sm">
+     <span class="inline-flex items-center gap-2">
+        <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        Loading jokes...
+      </span>
+      </div>
+    }
+    @if (jokes.error()) {
+      <div class="p-4 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-lg text-[#dd0031] text-sm">
+        Error: {{ jokes.error()?.message }}
+      </div>
+    } @else {
+      <div class="space-y-3">
+        @for (joke of jokeSnapshot.value(); track joke.id) {
+          <div class="bg-[#111] rounded-xl border border-[#2d2d2d] p-5 hover:border-[#dd0031]/40 transition-colors">
+            <div class="flex items-start gap-4">
+              <div class="w-9 h-9 bg-[#dd0031]/10 rounded-lg flex items-center justify-center shrink-0">
+                <span class="text-[#dd0031] font-bold text-xs">{{ joke.id }}</span>
+              </div>
+              <div>
+                <p class="text-white font-medium text-sm">{{ joke.setup }}</p>
+                <p class="mt-1 text-[#888] text-sm">{{ joke.punchline }}</p>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="text-center py-12 text-[#888]">No jokes found.</div>
+        }
+      </div>
+    }
+  </div>
+</div>
 
-  @if (jokes.isLoading()) {
-    <div class="flex items-center justify-center py-16">
-      <div class="w-8 h-8 border-2 border-[#dd0031] border-t-transparent rounded-full animate-spin"></div>
-      <span class="ml-3 text-[#a0a0a0]">Loading jokes...</span>
+<!-- ── httpResource() with search query params: Chuck Norris ──────── -->
+<div class="mt-10 pt-8 border-t border-[#2d2d2d]">
+  <div class="mb-6 flex items-center justify-between">
+    <span
+      class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-mono">
+      httpResource() + search params
+    </span>
+    @if (chuckNorrisResource.hasValue()) {
+
+      <span class="text-[#a0a0a0] text-xs font-mono">
+      {{ chuckNorrisResource.value().total }} results
+    </span>
+    }
+  </div>
+
+  <!-- Code Example -->
+  <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
+    <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
+      <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
+      <span class="text-amber-400 text-xs font-mono">api.chucknorris.io/jokes/search?query=</span>
     </div>
-  } @else if (jokes.error()) {
-    <div class="p-4 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-lg text-[#dd0031] text-sm">
-      Error: {{ jokes.error()?.message }}
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span
+      class="text-[#9cdcfe]">chuckNorrisResource</span> <span class="text-[#d4d4d4]">=</span> <span
+      class="text-[#dcdcaa]">httpResource</span><span class="text-[#d4d4d4]">(() =&gt; &#123;</span>
+  <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">trimmed</span> <span
+        class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">query</span><span
+        class="text-[#d4d4d4]">().</span><span class="text-[#dcdcaa]">trim</span><span class="text-[#d4d4d4]">();</span>
+  <span class="text-[#6a9955]">// API 400s under 3 chars — return undefined to keep the resource idle</span>
+  <span class="text-[#569cd6]">return</span> <span class="text-[#9cdcfe]">trimmed</span><span class="text-[#d4d4d4]">.length</span> <span
+        class="text-[#d4d4d4]">&gt;=</span> <span class="text-[#b5cea8]">3</span>
+    <span class="text-[#d4d4d4]">?</span> <span class="text-[#ce9178]">`https://api.chucknorris.io/jokes/search?query=$&#123;trimmed&#125;`</span>
+    <span class="text-[#d4d4d4]">: undefined;</span>
+<span class="text-[#d4d4d4]">&#125;, &#123;</span> <span class="text-[#9cdcfe]">defaultValue</span><span
+        class="text-[#d4d4d4]">:</span> <span class="text-[#d4d4d4]">&#123; total: 0, result: [] &#125; &#125;);</span></code></pre>
+  </div>
+
+  <input
+    #searchInput
+    type="text"
+    placeholder="Search Chuck Norris jokes... (e.g. dog, coding, gym)"
+    (input)="onSearchInput(searchInput.value)"
+    class="w-full mb-4 px-4 py-2.5 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-amber-500/50 transition-colors"
+  />
+
+  @if (searchQuery().trim().length < 3) {
+    <div class="flex items-center justify-center py-16 text-[#a0a0a0] text-sm">
+      Type at least 3 characters to search (the API rejects shorter queries).
+    </div>
+  } @else if (chuckNorrisResource.isLoading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+      <span class="ml-3 text-[#a0a0a0]">Searching...</span>
+    </div>
+  } @else if (chuckNorrisResource.error()) {
+    <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400 text-sm">
+      Error: {{ chuckNorrisResource.error()?.message }}
     </div>
   } @else {
     <div class="space-y-3">
-      @for (joke of jokes.value(); track joke.id) {
-        <div class="bg-[#111] rounded-xl border border-[#2d2d2d] p-5 hover:border-[#dd0031]/40 transition-colors">
+      @for (joke of chuckNorrisResource.value().result; track joke.id) {
+        <div class="bg-[#111] rounded-xl border border-[#2d2d2d] p-5 hover:border-amber-500/40 transition-colors">
           <div class="flex items-start gap-4">
-            <div class="w-9 h-9 bg-[#dd0031]/10 rounded-lg flex items-center justify-center shrink-0">
-              <span class="text-[#dd0031] font-bold text-xs">{{ joke.id }}</span>
-            </div>
-            <div>
-              <p class="text-white font-medium text-sm">{{ joke.setup }}</p>
-              <p class="mt-1 text-[#888] text-sm">{{ joke.punchline }}</p>
-            </div>
+            <img [src]="joke.icon_url" alt="" class="w-9 h-9 rounded-lg shrink-0" />
+            <p class="text-white text-sm">{{ joke.value }}</p>
           </div>
         </div>
       } @empty {
-        <div class="text-center py-12 text-[#888]">No jokes found.</div>
+        <div class="text-center py-12 text-[#888]">No jokes matched "{{ searchQuery() }}".</div>
       }
     </div>
   }
-
 </div>
