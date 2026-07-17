@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Forms: how pending() bubbles up the tree</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel-2: #141414;
+    --border: #2d2d2d;
+    --border-2: #3d3d3d;
+    --red: #dd0031;
+    --red-2: #c3002f;
+    --pink: #ff4d6d;
+    --blue: #60a5fa;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --text: #ededed;
+    --muted: #a0a0a0;
+    --dim: #6b6b6b;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: radial-gradient(1200px 600px at 50% -10%, #1c1c1c 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 48px 20px 96px; }
+
+  header.hero { text-align: center; margin-bottom: 40px; }
+  .badge {
+    display: inline-block; font-family: var(--mono); font-size: 12px;
+    color: var(--muted); border: 1px solid var(--border-2);
+    padding: 4px 12px; border-radius: 999px; margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(28px, 5vw, 44px); line-height: 1.15; margin: 0 0 14px;
+    font-weight: 800; letter-spacing: -0.02em;
+  }
+  h1 .grad {
+    background: linear-gradient(100deg, var(--pink), var(--blue));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub { color: var(--muted); font-size: 18px; max-width: 640px; margin: 0 auto; }
+
+  section { margin-top: 44px; }
+  h2 {
+    font-size: 22px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 12px;
+  }
+  h2 .num {
+    width: 26px; height: 26px; flex: none; border-radius: 8px; font-size: 13px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--red), var(--red-2));
+    color: #fff; font-weight: 700; box-shadow: 0 4px 14px rgba(221,0,49,.25);
+  }
+  h2 + .lead { color: var(--muted); margin: 0 0 18px 38px; }
+
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px; margin-top: 16px;
+  }
+  .panel.tight { padding: 16px; }
+
+  p { margin: 12px 0; }
+  code.inline {
+    font-family: var(--mono); font-size: 0.88em; background: #000;
+    border: 1px solid var(--border-2); border-radius: 6px; padding: 1px 6px; color: #e6e6e6;
+  }
+  .k-blue { color: var(--blue); }
+  .k-green { color: var(--green); }
+  .k-red { color: var(--pink); }
+  .k-amber { color: var(--amber); }
+
+  /* TL;DR callout */
+  .tldr {
+    border-left: 3px solid var(--red); background: linear-gradient(90deg, rgba(221,0,49,.10), transparent 70%);
+    border-radius: 10px; padding: 16px 20px;
+  }
+  .tldr strong { color: var(--pink); }
+
+  /* code block */
+  pre {
+    margin: 14px 0 0; background: #060606; border: 1px solid var(--border-2);
+    border-radius: 12px; padding: 16px 18px; overflow-x: auto;
+    font-family: var(--mono); font-size: 13.5px; line-height: 1.7;
+  }
+  pre .cmt { color: var(--dim); }
+  pre .fn  { color: var(--blue); }
+  pre .str { color: var(--green); }
+  pre .kw  { color: var(--pink); }
+  pre .hl  { background: rgba(96,165,250,.12); border-radius: 4px; display: inline-block; padding: 0 3px; }
+  pre .hl-red { background: rgba(221,0,49,.16); border-radius: 4px; display: inline-block; padding: 0 3px; }
+
+  /* Tree diagram */
+  .tree-tool { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 22px; }
+  .btn {
+    font: inherit; font-weight: 600; font-size: 14px; cursor: pointer;
+    border: 1px solid var(--border-2); background: #202020; color: var(--text);
+    padding: 9px 16px; border-radius: 10px; transition: .15s;
+  }
+  .btn:hover { background: #2a2a2a; }
+  .btn.primary { background: var(--red); border-color: var(--red); }
+  .btn.primary:hover { background: var(--red-2); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .mode-label { color: var(--muted); font-size: 14px; }
+  .mode-label b { color: var(--text); }
+
+  .tree { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 8px 0 4px; }
+  .node {
+    position: relative; width: 320px; max-width: 90%; background: var(--panel-2);
+    border: 1.5px solid var(--border-2); border-radius: 12px; padding: 12px 16px;
+    transition: border-color .35s, box-shadow .35s, background .35s;
+  }
+  .node .role { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+  .node .name { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+  .node .flag {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 3px 9px;
+    border-radius: 999px; border: 1px solid var(--border-2); color: var(--dim);
+    transition: .35s;
+  }
+  .node.active {
+    border-color: var(--blue); background: #12202f;
+    box-shadow: 0 0 0 1px var(--blue), 0 0 26px rgba(96,165,250,.25);
+  }
+  .node.active .flag { color: var(--blue); border-color: var(--blue); background: rgba(96,165,250,.12); }
+  .node.stopped {
+    border-color: var(--red); background: #241014;
+    box-shadow: 0 0 0 1px var(--red), 0 0 26px rgba(221,0,49,.22);
+  }
+  .node.stopped .flag { color: var(--pink); border-color: var(--red); background: rgba(221,0,49,.12); }
+
+  .connector { width: 2px; height: 34px; background: var(--border-2); transition: background .35s; position: relative; }
+  .connector.lit { background: linear-gradient(var(--blue), var(--blue)); box-shadow: 0 0 10px var(--blue); }
+  .connector.cut { background: var(--border-2); }
+  .connector.cut::after {
+    content: "✕ stops here"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--pink); font-family: var(--mono); font-size: 11px; white-space: nowrap; opacity: 0;
+    transition: opacity .35s;
+  }
+  .connector.cut.show::after { opacity: 1; }
+  .arrow-up { color: var(--dim); font-size: 12px; font-family: var(--mono); margin: 2px 0; }
+
+  .caption { text-align: center; color: var(--muted); font-size: 14px; margin-top: 18px; min-height: 22px; }
+  .caption b.blue { color: var(--blue); }
+  .caption b.red { color: var(--pink); }
+
+  /* table */
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+  td.mono, th.mono { font-family: var(--mono); }
+  .pill { font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+  .pill.t { color: var(--blue); background: rgba(96,165,250,.14); border: 1px solid rgba(96,165,250,.4); }
+  .pill.f { color: var(--pink); background: rgba(221,0,49,.14); border: 1px solid rgba(221,0,49,.4); }
+
+  /* two-col compare */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 680px) { .compare { grid-template-columns: 1fr; } .node { width: 280px; } }
+  .compare .panel { margin-top: 0; }
+  .chip {
+    display: inline-block; font-family: var(--mono); font-size: 12px; padding: 2px 9px;
+    border-radius: 6px; margin: 2px 4px 2px 0;
+  }
+  .chip.good { color: var(--green); background: rgba(52,211,153,.12); border: 1px solid rgba(52,211,153,.35); }
+  .chip.bad  { color: var(--pink); background: rgba(221,0,49,.12); border: 1px solid rgba(221,0,49,.35); }
+
+  .fix-good, .fix-bad { border-radius: 10px; padding: 14px 16px; margin-top: 12px; font-family: var(--mono); font-size: 13px; }
+  .fix-bad { border: 1px solid rgba(221,0,49,.4); background: rgba(221,0,49,.07); }
+  .fix-good { border: 1px solid rgba(52,211,153,.4); background: rgba(52,211,153,.07); }
+  .fix-bad .tag  { color: var(--pink); font-weight: 700; }
+  .fix-good .tag { color: var(--green); font-weight: 700; }
+
+  footer { margin-top: 56px; text-align: center; color: var(--dim); font-size: 13px; }
+  .src-ref { font-family: var(--mono); font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  .src-ref b { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="badge">Angular 22.1.0-next.0 · experimental signal forms</div>
+    <h1>Why <span class="grad">userForm().pending()</span><br>never saw the phone field</h1>
+    <p class="sub">A field's <code class="inline">pending()</code> is true while an async validator resolves. The surprise is how far up the form tree that truth travels.</p>
+  </header>
+
+  <!-- TL;DR -->
+  <div class="panel tldr">
+    <strong>TL;DR.</strong> <code class="inline">pending()</code> bubbles up <b>exactly one level</b>. Your async validator sits on <code class="inline">phone</code>, which is a grandchild of the root, so <code class="inline">userForm().pending()</code> stays <span class="k-red">false</span> the whole time. Its sibling states (<code class="inline">valid</code>, <code class="inline">invalid</code>, <code class="inline">touched</code>, <code class="inline">dirty</code>) recurse the full tree. <code class="inline">pending</code> is the odd one out.
+  </div>
+
+  <!-- 1. Setup -->
+  <section>
+    <h2><span class="num">1</span> The setup</h2>
+    <p class="lead">An async validator on the phone field. It debounces, then simulates a "is this number already registered" check.</p>
+    <div class="panel">
+<pre><span class="fn">validateAsync</span>(path.personalInfo.phone, {
+  params: ({ value }) =&gt; <span class="fn">value</span>(),
+  when:   ({ value }) =&gt; <span class="fn">value</span>().<span class="fn">trim</span>().length &gt; 0,
+  debounce: <span class="kw">500</span>,
+  factory: (params) =&gt; <span class="fn">resource</span>({
+    params: () =&gt; <span class="fn">params</span>(),
+    loader: <span class="kw">async</span> ({ params }) =&gt; {
+      <span class="kw">await</span> <span class="kw">new</span> <span class="fn">Promise</span>((r) =&gt; <span class="fn">setTimeout</span>(r, <span class="kw">1500</span>));   <span class="cmt">// fake network</span>
+      <span class="kw">return</span> REGISTERED_PHONE_NUMBERS.<span class="fn">includes</span>(params);
+    },
+  }),
+  onSuccess: (taken) =&gt; taken ? { kind: <span class="str">'phoneTaken'</span>, message: <span class="str">'...'</span> } : <span class="kw">null</span>,
+  onError:   () =&gt; ({ kind: <span class="str">'phoneCheckFailed'</span>, message: <span class="str">'...'</span> }),
+});</pre>
+      <p style="margin-bottom:0"><span class="k-amber">Timeline:</span> 500ms debounce + 1500ms loader = about <b>2 seconds</b> where <code class="inline">phone().pending()</code> is <span class="k-blue">true</span>.</p>
+    </div>
+  </section>
+
+  <!-- 2. Interactive tree -->
+  <section>
+    <h2><span class="num">2</span> Watch it travel</h2>
+    <p class="lead">The form is a tree. Press the button and follow the pending signal as it moves up from the phone field.</p>
+
+    <div class="panel">
+      <div class="tree-tool">
+        <button class="btn primary" id="simBtn">▶ Simulate typing in phone</button>
+        <button class="btn" id="resetBtn">Reset</button>
+        <span class="mode-label">state: <b id="modeLabel">idle</b></span>
+      </div>
+
+      <div class="tree" id="tree">
+        <div class="node" data-node="root">
+          <div class="role">root (form)</div>
+          <div class="name">userForm()</div>
+          <div class="flag" data-flag="root">pending: false</div>
+        </div>
+        <div class="connector" data-conn="root"></div>
+        <div class="arrow-up">▲ aggregates children</div>
+
+        <div class="node" data-node="group">
+          <div class="role">child group</div>
+          <div class="name">personalInfo()</div>
+          <div class="flag" data-flag="group">pending: false</div>
+        </div>
+        <div class="connector" data-conn="group"></div>
+        <div class="arrow-up">▲ aggregates children</div>
+
+        <div class="node" data-node="phone">
+          <div class="role">leaf · has the async validator</div>
+          <div class="name">phone()</div>
+          <div class="flag" data-flag="phone">pending: false</div>
+        </div>
+      </div>
+
+      <div class="caption" id="caption">Idle. No async validator running yet.</div>
+    </div>
+  </section>
+
+  <!-- 3. The asymmetry -->
+  <section>
+    <h2><span class="num">3</span> pending vs everything else</h2>
+    <p class="lead">Every aggregated state uses the same <code class="inline">reduceChildren</code> walk over direct children. The difference is what each one asks the child.</p>
+
+    <div class="compare">
+      <div class="panel">
+        <div style="font-weight:700; margin-bottom:6px;" class="k-green">Recurses the whole tree ✓</div>
+        <p style="margin-top:4px; color:var(--muted); font-size:14px;">Reads the child's <b>own aggregated signal</b>, so each child re-runs the same walk on its children. Truth flows all the way to the root.</p>
+        <div>
+          <span class="chip good">valid</span><span class="chip good">invalid</span>
+          <span class="chip good">touched</span><span class="chip good">dirty</span>
+          <span class="chip good">errorSummary</span>
+        </div>
+<pre style="font-size:12.5px"><span class="cmt">// dirty — calls child.dirty() → recursive</span>
+value || child.nodeState.<span class="hl">dirty()</span></pre>
+      </div>
+
+      <div class="panel">
+        <div style="font-weight:700; margin-bottom:6px;" class="k-red">Only one level ✗</div>
+        <p style="margin-top:4px; color:var(--muted); font-size:14px;">Reads the child's <b>own raw async errors</b>, not the child's aggregated <code class="inline">pending</code>. So a grandchild's pending never reaches the top.</p>
+        <div>
+          <span class="chip bad">pending</span>
+        </div>
+<pre style="font-size:12.5px"><span class="cmt">// pending — reads raw errors, NOT recursive</span>
+value || child.validationState
+  .<span class="hl-red">asyncErrors().includes('pending')</span></pre>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p style="margin-top:0">Straight from the compiled source. Note line 751 reads <code class="inline">asyncErrors()</code>, while <code class="inline">dirty</code> at line 1643 reads <code class="inline">child.nodeState.dirty()</code>. That single choice is the entire bug.</p>
+<pre><span class="cmt">// @angular/forms/fesm2022/_validation_errors-chunk.mjs</span>
+
+<span class="cmt">// line 751 — pending (STOPS after direct children)</span>
+pending = <span class="fn">computed</span>(() =&gt; this.node.structure.<span class="fn">reduceChildren</span>(
+  this.<span class="fn">asyncErrors</span>().<span class="fn">includes</span>(<span class="str">'pending'</span>),
+  (child, value) =&gt; value || child.validationState.<span class="hl-red">asyncErrors().includes('pending')</span>
+));
+
+<span class="cmt">// line 1643 — dirty (RECURSES: child.dirty() walks its own children)</span>
+this.node.structure.<span class="fn">reduceChildren</span>(selfDirty,
+  (child, value) =&gt; value || child.nodeState.<span class="hl">dirty()</span>, shortCircuitTrue);
+
+<span class="cmt">// line 1057 — reduceChildren only ever loops DIRECT children</span>
+<span class="fn">reduceChildren</span>(initialValue, fn, shortCircuit) {
+  <span class="kw">for</span> (<span class="kw">const</span> child <span class="kw">of</span> map.byPropertyKey.<span class="fn">values</span>()) { ... }
+}</pre>
+    </div>
+  </section>
+
+  <!-- 4. Live proof -->
+  <section>
+    <h2><span class="num">4</span> Live proof</h2>
+    <p class="lead">Read from the running app (via <code class="inline">window.ng.getComponent</code>) while the phone field was mid-validation.</p>
+    <div class="panel tight">
+      <table>
+        <thead>
+          <tr><th>Signal</th><th>Distance from phone</th><th>Value during check</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">phone().pending()</td><td>the field itself</td><td><span class="pill t">true</span></td></tr>
+          <tr><td class="mono">personalInfo().pending()</td><td>1 level up (parent)</td><td><span class="pill t">true</span></td></tr>
+          <tr><td class="mono">userForm().pending()</td><td>2 levels up (root)</td><td><span class="pill f">false</span></td></tr>
+          <tr><td class="mono">submit button .disabled</td><td>uses the root signal</td><td><span class="pill f">false</span></td></tr>
+        </tbody>
+      </table>
+      <p class="src-ref">Sampled every 200ms across the full ~2s window. <b>root</b> was <span class="k-red">false</span> at every single sample.</p>
+    </div>
+  </section>
+
+  <!-- 5. The fix -->
+  <section>
+    <h2><span class="num">5</span> The practical fix</h2>
+    <p class="lead">Your submit guard on the root won't block anything while the phone validates. Guard on the field (or its immediate group) instead.</p>
+    <div class="panel">
+      <div class="fix-bad">
+        <span class="tag">✗ does nothing</span> &nbsp; <code>[disabled]="userForm().submitting() || userForm().pending()"</code>
+      </div>
+      <div class="fix-good">
+        <span class="tag">✓ actually blocks</span> &nbsp; <code>[disabled]="userForm().submitting() || userForm.personalInfo.phone().pending()"</code>
+      </div>
+      <p style="margin-bottom:0; color:var(--muted); font-size:14px;">Had the async validator been on a <b>direct</b> child of the root, <code class="inline">userForm().pending()</code> would have caught it. It is specifically the two-levels-deep case that slips through. This reads as an inconsistency (very likely a bug) in this nightly build, since <code class="inline">pending</code> is the only aggregated state that does not recurse.</p>
+    </div>
+  </section>
+
+  <footer>
+    Verified against <b style="color:var(--muted)">@angular/forms 22.1.0-next.0</b> source and the live app. Built for the new-angular-features playground.
+  </footer>
+
+</div>
+
+<script>
+  const nodes = {
+    phone: document.querySelector('[data-node="phone"]'),
+    group: document.querySelector('[data-node="group"]'),
+    root:  document.querySelector('[data-node="root"]'),
+  };
+  const flags = {
+    phone: document.querySelector('[data-flag="phone"]'),
+    group: document.querySelector('[data-flag="group"]'),
+    root:  document.querySelector('[data-flag="root"]'),
+  };
+  const conns = {
+    phone: document.querySelector('[data-conn="group"]'), // connector between phone and group
+    group: document.querySelector('[data-conn="root"]'),  // connector between group and root
+  };
+  const caption = document.getElementById('caption');
+  const modeLabel = document.getElementById('modeLabel');
+  const simBtn = document.getElementById('simBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let timers = [];
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+
+  function setFlag(key, val) {
+    flags[key].textContent = 'pending: ' + val;
+  }
+  function reset() {
+    clearTimers();
+    for (const k in nodes) {
+      nodes[k].classList.remove('active', 'stopped');
+      setFlag(k, 'false');
+    }
+    conns.phone.className = 'connector';
+    conns.group.className = 'connector';
+    caption.innerHTML = 'Idle. No async validator running yet.';
+    modeLabel.textContent = 'idle';
+    simBtn.disabled = false;
+  }
+
+  function simulate() {
+    reset();
+    simBtn.disabled = true;
+
+    // 0ms: user typed, debounce running
+    modeLabel.textContent = 'debounce (500ms)';
+    caption.innerHTML = 'You typed. The <b class="blue">500ms debounce</b> is counting down before the async check fires.';
+
+    // 500ms: phone goes pending
+    at(600, () => {
+      modeLabel.textContent = 'validating';
+      nodes.phone.classList.add('active');
+      setFlag('phone', 'true');
+      caption.innerHTML = '<b class="blue">phone().pending()</b> is now true. The async resource is loading.';
+    });
+
+    // bubble up one level to group
+    at(1300, () => {
+      conns.phone.classList.add('lit');
+      nodes.group.classList.add('active');
+      setFlag('group', 'true');
+      caption.innerHTML = 'Pending bubbles up <b class="blue">one level</b>. <b class="blue">personalInfo()</b> reads its direct child and turns true.';
+    });
+
+    // stops before root
+    at(2100, () => {
+      conns.group.className = 'connector cut show';
+      nodes.root.classList.add('stopped');
+      setFlag('root', 'false');
+      caption.innerHTML = 'The root reads <b class="red">personalInfo\'s own async errors</b>, which are empty. So <b class="red">userForm().pending()</b> stays false. The signal never reaches the top.';
+    });
+
+    // resolve
+    at(3600, () => {
+      modeLabel.textContent = 'resolved';
+      nodes.phone.classList.remove('active');
+      nodes.group.classList.remove('active');
+      nodes.root.classList.remove('stopped');
+      conns.phone.className = 'connector';
+      conns.group.className = 'connector';
+      setFlag('phone', 'false'); setFlag('group', 'false'); setFlag('root', 'false');
+      caption.innerHTML = 'Check resolved. Everything back to false. <b class="red">Root never flipped once.</b>';
+      simBtn.disabled = false;
+    });
+  }
+
+  simBtn.addEventListener('click', simulate);
+  resetBtn.addEventListener('click', reset);
+</script>
+</body>
+</html>

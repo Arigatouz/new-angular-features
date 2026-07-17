@@ -1,1 +1,99 @@
-<p>temp-component works!</p>
+<form class="space-y-6" [formRoot]="userForm">
+
+  <fieldset class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-4 border-solid">
+    <legend class="float-none w-auto p-0">
+      <div class="flex items-center gap-3 mb-3">
+        <span
+          class="w-6 h-6 rounded-lg bg-linear-to-br from-[#dd0031] to-[#c3002f] flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-[#dd0031]/20">1</span>
+        <span
+          class="text-transparent bg-clip-text bg-linear-to-r from-[#ff4d6d] to-[#60a5fa] text-base font-extrabold tracking-tight">Personal Information</span>
+      </div>
+      <div class="h-px bg-linear-to-r from-[#dd0031]/40 via-[#dd0031]/10 to-transparent"></div>
+    </legend>
+
+    <label class="block space-y-1.5">
+      @if (userForm.personalInfo.firstName().required()) {
+        <span class="text-[#ff4d6d]">* </span>
+      }
+      <span class="text-xs font-medium text-[#a0a0a0]">First Name</span>
+      <input type="text"
+             [aria-invalid]="ariaInvalidState(userForm.personalInfo.firstName)"
+             [formField]="userForm.personalInfo.firstName" placeholder="Enter first name"
+             class="w-full bg-[#0f0f0f] border border-[#3d3d3d] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60">
+      @if (userForm.personalInfo.firstName().touched() && userForm.personalInfo.firstName().invalid()) {
+        <p role="alert" class="text-red-400 text-xs">
+          {{ userForm.personalInfo.firstName().errors()[0].message }}
+        </p>
+      }
+    </label>
+
+    <label class="block space-y-1.5">
+      <span class="text-xs font-medium text-[#a0a0a0]">Last Name</span>
+      <input type="text" [formField]="userForm.personalInfo.lastName" placeholder="Enter last name"
+             class="w-full bg-[#0f0f0f] border border-[#3d3d3d] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60">
+    </label>
+
+    <label class="block space-y-1.5">
+      <span class="text-xs font-medium text-[#a0a0a0]">Age</span>
+      <input type="number" [formField]="userForm.personalInfo.age" placeholder="25"
+             class="w-full bg-[#0f0f0f] border border-[#3d3d3d] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60">
+    </label>
+    <!--Emails-->
+    <fieldset class="space-y-2">
+      <legend class="text-xs font-medium text-[#a0a0a0]">Emails</legend>
+      <button type="button"
+              class="w-full h-10 bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white font-medium py-2.5 rounded-lg text-sm transition-colors duration-200 flex items-center justify-center gap-2"
+              (click)="addEmail()">Add Email
+      </button>
+      @for (email of userForm.personalInfo.emails; track $index) {
+
+        <label class="block space-y-1.5">
+          <span class="text-xs font-medium text-[#a0a0a0]">Email {{ $index + 1 }}</span>
+          <div class="flex items-center">
+            <input type="email" [formField]="email" placeholder="you@example.com"
+                   [aria-label]="'E-mail ' + ($index + 1)"
+                   [aria-invalid]="ariaInvalidState(email)"
+                   [class.border-red-500]="email().touched() && email().invalid()"
+                   class="w-full bg-[#0f0f0f] border border-[#3d3d3d] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60">
+            <button type="button"
+                    class="ml-2 cursor-pointer hover:bg-[#c3002f] font-medium py-2 px-3 rounded-lg text-xl transition-colors duration-200"
+                    (click)="removeEmail($index)">
+              &times;
+            </button>
+          </div>
+          <app-field-error [fieldRef]="email"></app-field-error>
+        </label>
+      }
+    </fieldset>
+    <label class="block space-y-1.5">
+      <span class="text-xs font-medium text-[#a0a0a0]">Phone Number</span>
+      <input type="tel" [formField]="userForm.personalInfo.phone" placeholder="+1 123 456 7890"
+             [style.border-color]="userForm.personalInfo.phone().pending() ? '#60a5fa' : null"
+             class="w-full bg-[#0f0f0f] border border-[#3d3d3d] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none transition-colors focus:border-[#dd0031]/60">
+      @if (userForm.personalInfo.phone().pending()) {
+        <p class="text-blue-400 text-xs">Checking phone number...</p>
+      }
+      <app-field-error [fieldRef]="userForm.personalInfo.phone"></app-field-error>
+    </label>
+  </fieldset>
+
+  <button type="submit"
+          [disabled]="userForm().submitting() || userForm.personalInfo().pending()"
+          [aria-busy]="userForm().submitting() || userForm.personalInfo().pending()"
+          [attr.aria-label]="userForm().submitting() ? 'Submitting...' : 'Submit'"
+          [class]="userForm().submitting() || userForm.personalInfo().pending() ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'"
+          class="w-full h-10 bg-[#dd0031] hover:bg-[#c3002f] text-white font-medium py-2.5 rounded-lg text-sm transition-colors duration-200 flex items-center justify-center gap-2">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    Submit
+    @if (userForm().submitting() || userForm.personalInfo().pending()) {
+      <div class="flex items-center justify-center">
+        <svg class="w-6 h-8 animate-spin text-shadow-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+      </div>
+    }
+  </button>
+</form>
