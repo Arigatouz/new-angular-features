@@ -343,7 +343,7 @@ this.node.structure.<span class="fn">reduceChildren</span>(selfDirty,
       <div class="fix-good">
         <span class="tag">✓ actually blocks</span> &nbsp; <code>[disabled]="userForm().submitting() || userForm.personalInfo.phone().pending()"</code>
       </div>
-      <p style="margin-bottom:0; color:var(--muted); font-size:14px;">Had the async validator been on a <b>direct</b> child of the root, <code class="inline">userForm().pending()</code> would have caught it. It is specifically the two-levels-deep case that slips through. This reads as an inconsistency (very likely a bug) in this nightly build, since <code class="inline">pending</code> is the only aggregated state that does not recurse.</p>
+      <p style="margin-bottom:0; color:var(--muted); font-size:14px;">Had the async validator been on a <b>direct</b> child of the root, <code class="inline">userForm().pending()</code> would have caught it. It is specifically the two-levels-deep case that slips through. This reads as an inconsistency (very likely a bug) in this 22.1.0-next.6 build, since <code class="inline">pending</code> is the only aggregated state that does not recurse.</p>
     </div>
   </section>
 

@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Countertwo } from './countertwo';
+import { CounterTwo } from './countertwo';
 
-describe('Countertwo', () => {
-  let service: Countertwo;
+describe('CounterTwo', () => {
+  let service: CounterTwo;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Countertwo);
+    // CounterTwo is declared with @Service({ autoProvided: false }), so it must
+    // be provided explicitly for the injector to resolve it.
+    TestBed.configureTestingModule({ providers: [CounterTwo] });
+    service = TestBed.inject(CounterTwo);
   });
 
   it('should be created', () => {

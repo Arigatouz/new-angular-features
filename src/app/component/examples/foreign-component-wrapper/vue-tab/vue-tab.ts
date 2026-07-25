@@ -75,7 +75,7 @@ export const VueCounterAdapter: ForeignComponent = &#123;
   &#125;],
   template: &#96;&lt;vue-counter [count]="count()" /&gt;&#96;,
 &#125;)</code></pre>
-        <p class="text-[#555] text-xs mt-2 italic">Note: <code class="text-[#555]">foreignImports</code> is compiler-infrastructure only in build sha-06b004e — rendering will land in a future nightly.</p>
+        <p class="text-[#555] text-xs mt-2 italic">Note: <code class="text-[#555]">foreignImports</code> is compiler-infrastructure only in build sha-06b004e — rendering will land in a future build.</p>
       </div>
     </div>
   `,

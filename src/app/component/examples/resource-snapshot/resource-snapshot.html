@@ -1,0 +1,179 @@
+<div class="space-y-6">
+  <header class="space-y-2">
+    <h1 class="text-transparent bg-clip-text bg-linear-to-r from-[#ff4d6d] to-[#60a5fa] text-2xl font-extrabold tracking-tight">
+      Resource <code>snapshot</code>
+    </h1>
+    <p class="text-sm text-[#a0a0a0] max-w-2xl">
+      Every <code class="text-[#ff4d6d]">resource()</code> / <code class="text-[#ff4d6d]">httpResource()</code>
+      exposes <code class="text-[#ff4d6d]">snapshot: Signal&lt;ResourceSnapshot&lt;T&gt;&gt;</code> — one atomic read of
+      the whole state as a discriminated union on <code>status</code>. Drive the controls and watch a single
+      <code>&#64;switch</code> narrow the type per branch.
+    </p>
+  </header>
+
+  <!-- Controls -->
+  <fieldset class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-3">
+    <legend class="text-xs font-semibold text-[#a0a0a0] uppercase tracking-wide px-1">Controls</legend>
+    <div class="flex flex-wrap gap-2">
+      <button type="button" (click)="loadUser(1)"
+        class="px-3 py-2 rounded-lg text-sm font-medium bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white transition-colors">
+        Load user 1
+      </button>
+      <button type="button" (click)="loadUser(2)"
+        class="px-3 py-2 rounded-lg text-sm font-medium bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white transition-colors">
+        Load user 2
+      </button>
+      <button type="button" (click)="reload()"
+        class="px-3 py-2 rounded-lg text-sm font-medium bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white transition-colors">
+        Reload
+      </button>
+      <button type="button" (click)="toggleError()"
+        [class]="forceError() ? 'bg-[#dd0031] text-white' : 'bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white'"
+        class="px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+        Force error: {{ forceError() ? 'on' : 'off' }}
+      </button>
+      <button type="button" (click)="setIdle()"
+        class="px-3 py-2 rounded-lg text-sm font-medium bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white transition-colors">
+        Set idle
+      </button>
+      <button type="button" (click)="setLocal()"
+        class="px-3 py-2 rounded-lg text-sm font-medium bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white transition-colors">
+        Set local value
+      </button>
+    </div>
+  </fieldset>
+
+  <!-- Comparison: four separate signals (left) vs one snapshot() (right) -->
+  @let snap = userRes.snapshot();
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+    <!-- LEFT: separate signals, correlated by hand, no type narrowing -->
+    <section class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-4" aria-live="polite">
+      <div class="flex items-center gap-3">
+        <span class="w-6 h-6 rounded-lg bg-[#2d2d2d] flex items-center justify-center text-[#a0a0a0] text-xs font-bold">A</span>
+        <h2 class="text-white text-base font-bold">Four separate signals</h2>
+      </div>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
+        <dt class="text-[#a0a0a0]"><code>isLoading()</code></dt>
+        <dd class="text-white font-mono">{{ userRes.isLoading() }}</dd>
+        <dt class="text-[#a0a0a0]"><code>status()</code></dt>
+        <dd class="text-white font-mono">{{ userRes.status() }}</dd>
+        <dt class="text-[#a0a0a0]"><code>hasValue()</code></dt>
+        <dd class="text-white font-mono">{{ userRes.hasValue() }}</dd>
+        <dt class="text-[#a0a0a0]"><code>value()</code></dt>
+        <dd class="text-white font-mono">{{ userRes.hasValue() ? userRes.value().name : '—' }}</dd>
+        <dt class="text-[#a0a0a0]"><code>error()</code></dt>
+        <dd class="text-white font-mono">{{ userRes.error()?.message ?? '—' }}</dd>
+      </dl>
+      <p class="text-xs text-[#777] border-t border-[#2d2d2d] pt-3">
+        Five independent reads you correlate by hand. <code>status()</code> is just a string — it does not tell
+        TypeScript whether <code>value()</code> or <code>error()</code> is meaningful, so you guard manually.
+      </p>
+    </section>
+
+    <!-- RIGHT: one snapshot() read, @switch narrows the union per branch -->
+    <section class="bg-[#1a1a1a] rounded-xl border border-[#dd0031]/30 p-5 space-y-4" aria-live="polite">
+      <div class="flex items-center gap-3">
+        <span class="w-6 h-6 rounded-lg bg-linear-to-br from-[#dd0031] to-[#c3002f] flex items-center justify-center text-white text-xs font-bold">B</span>
+        <h2 class="text-white text-base font-bold">One <code>snapshot()</code></h2>
+        <code class="ml-auto text-xs px-2 py-1 rounded-md bg-[#0f0f0f] border border-[#3d3d3d] text-[#60a5fa]">status: {{ snap.status }}</code>
+      </div>
+
+      @switch (snap.status) {
+      @case ('idle') {
+        <p class="text-sm text-[#a0a0a0]">
+          <span class="text-[#60a5fa] font-medium">idle</span> — no request in flight. No <code>value</code> yet.
+        </p>
+      }
+      @case ('loading') {
+        <p class="text-sm text-blue-400">
+          <span class="font-medium">loading</span> — fetching the first value…
+        </p>
+      }
+      @case ('reloading') {
+        <p class="text-sm text-blue-400">
+          <span class="font-medium">reloading</span> — previous value stays available: {{ snap.value?.name }}
+        </p>
+      }
+      @case ('resolved') {
+        <p class="text-sm text-emerald-400">
+          <span class="font-medium">resolved</span> — {{ snap.value?.name }} &lt;{{ snap.value?.email }}&gt;
+        </p>
+      }
+      @case ('local') {
+        <p class="text-sm text-amber-400">
+          <span class="font-medium">local</span> (set via <code>.set()</code>) — {{ snap.value?.name }}
+        </p>
+      }
+      @case ('error') {
+        <p class="text-sm text-red-400" role="alert">
+          <span class="font-medium">error</span> — {{ snap.error.message }}
+        </p>
+      }
+    }
+
+    <pre class="text-xs text-[#a0a0a0] bg-[#0f0f0f] border border-[#2d2d2d] rounded-lg p-3 overflow-x-auto">{{ snap | json }}</pre>
+    </section>
+
+  </div>
+
+  <!-- Composition: resourceFromSnapshots keeps the previous value while switching requests -->
+  <section class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-4">
+    <div class="flex items-center gap-3">
+      <span class="w-6 h-6 rounded-lg bg-linear-to-br from-[#dd0031] to-[#c3002f] flex items-center justify-center text-white text-xs font-bold">2</span>
+      <h2 class="text-white text-base font-bold">Composition · <code>resourceFromSnapshots</code></h2>
+    </div>
+    <p class="text-sm text-[#a0a0a0]">
+      Click <b>Load user 1</b> then <b>Load user 2</b>. A switch to a different request goes through
+      <code>loading</code>, so the raw resource blanks its value. The composed resource maps that snapshot to
+      <code>reloading</code> and keeps the previous value on screen — no flash of empty.
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-[#0f0f0f] border border-[#2d2d2d] rounded-lg p-4 space-y-1">
+        <p class="text-xs font-semibold text-[#777] uppercase tracking-wide">Raw <code>userRes</code></p>
+        <p class="text-sm"><span class="text-[#a0a0a0]">status</span> <code class="text-[#60a5fa]">{{ userRes.status() }}</code></p>
+        <p class="text-sm"><span class="text-[#a0a0a0]">value</span> <span class="text-white font-mono">{{ userRes.hasValue() ? userRes.value().name : '—' }}</span></p>
+      </div>
+      <div class="bg-[#0f0f0f] border border-[#dd0031]/30 rounded-lg p-4 space-y-1">
+        <p class="text-xs font-semibold text-[#777] uppercase tracking-wide">Composed <code>stickyRes</code></p>
+        <p class="text-sm"><span class="text-[#a0a0a0]">status</span> <code class="text-[#60a5fa]">{{ stickyRes.status() }}</code></p>
+        <p class="text-sm"><span class="text-[#a0a0a0]">value</span> <span class="text-white font-mono">{{ stickyRes.hasValue() ? stickyRes.value().name : '—' }}</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chaining: postsRes depends on userRes via ctx.chain; its snapshot propagates upstream status -->
+  @let postsSnap = postsRes.snapshot();
+  <section class="bg-[#1a1a1a] rounded-xl border border-[#2d2d2d] p-5 space-y-4" aria-live="polite">
+    <div class="flex items-center gap-3">
+      <span class="w-6 h-6 rounded-lg bg-linear-to-br from-[#dd0031] to-[#c3002f] flex items-center justify-center text-white text-xs font-bold">3</span>
+      <h2 class="text-white text-base font-bold">Chaining · <code>ctx.chain(userRes)</code></h2>
+      <code class="ml-auto text-xs px-2 py-1 rounded-md bg-[#0f0f0f] border border-[#3d3d3d] text-[#60a5fa]">posts: {{ postsSnap.status }}</code>
+    </div>
+    <p class="text-sm text-[#a0a0a0]">
+      The posts resource chains off the user resource. Toggle <b>Force error</b> or <b>Set idle</b> above and
+      watch this snapshot follow the upstream — <code>ctx.chain</code> throws the user's status when it is not
+      resolved, so you never fetch posts for a user that failed to load.
+    </p>
+    @switch (postsSnap.status) {
+      @case ('idle') {
+        <p class="text-sm text-[#a0a0a0]"><span class="text-[#60a5fa] font-medium">idle</span> — upstream user is idle, so no posts request is made.</p>
+      }
+      @case ('loading') {
+        <p class="text-sm text-blue-400"><span class="font-medium">loading</span> — waiting on the user, then the posts…</p>
+      }
+      @case ('reloading') {
+        <p class="text-sm text-blue-400"><span class="font-medium">reloading</span> — {{ postsSnap.value.length }} posts (stale)</p>
+      }
+      @case ('resolved') {
+        <p class="text-sm text-emerald-400"><span class="font-medium">resolved</span> — {{ postsSnap.value.length }} posts for this user</p>
+      }
+      @case ('local') {
+        <p class="text-sm text-amber-400"><span class="font-medium">local</span> — {{ postsSnap.value.length }} posts</p>
+      }
+      @case ('error') {
+        <p class="text-sm text-red-400" role="alert"><span class="font-medium">error</span> — propagated from the user: {{ postsSnap.error.message }}</p>
+      }
+    }
+  </section>
+</div>

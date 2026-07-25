@@ -1,7 +1,7 @@
-# ⚗️ Angular Nightly Experiments
+# ⚗️ Angular 22.1.0-next.6 Experiments
 
 > **⚠️ UNSTABLE   Here be dragons.**
-> This project runs on the Angular **nightly build** pulled directly from the Angular team's GitHub build artifacts. APIs change without notice, things break, and that's the whole point.
+> This project runs on Angular **22.1.0-next.6** pulled directly from the Angular team's GitHub build artifacts. APIs change without notice, things break, and that's the whole point.
 
 ---
 
@@ -40,14 +40,14 @@ That's it. Stable. Boring. Perfect for production.
 
 ---
 
-## Installing the Angular Nightly Build
+## Installing Angular 22.1.0-next.6
 
-The nightly build is not on npm   it lives in GitHub build artifact repositories that the Angular team publishes after every successful CI run. To use it, you point your dependencies directly at those repos.
+22.1.0-next.6 is not on npm   it lives in GitHub build artifact repositories that the Angular team publishes after every successful CI run. To use it, you point your dependencies directly at those repos.
 
-> **Want an AI agent to do this for you?** Check out the [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill) repo   it's a Claude Code skill that automates the entire migration. Just say *"switch to nightly angular"* and it rewrites your `package.json`, handles the pnpm quirks, upgrades TypeScript, and verifies the install. No manual editing required.
+> **Want an AI agent to do this for you?** Check out the [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill) repo   it's a Claude Code skill that automates the entire migration. Just say *"switch to the experimental angular build"* and it rewrites your `package.json`, handles the pnpm quirks, upgrades TypeScript, and verifies the install. No manual editing required.
 
 ```bash
-# Install the nightly CLI (published to npm under the "next" tag)
+# Install the build CLI (published to npm under the "next" tag)
 npm install -g @angular/cli@next
 ```
 
@@ -79,7 +79,7 @@ npm install
 pnpm install
 ```
 
-> **Note:** GitHub-sourced packages always install the latest commit on the build branch. Run `pnpm install` again any time you want to pull the newest nightly.
+> **Note:** GitHub-sourced packages always install the latest commit on the build branch. Run `pnpm install` again any time you want to pull the newest build.
 
 ---
 
@@ -89,7 +89,7 @@ These are the features being tracked in this repo   things that are already merg
 
 ### Signal Forms   `@angular/forms/signals`
 
-Reactive, signal-native forms. Already graduated to `@publicApi 22.0` in the nightly. Zero `FormControl` boilerplate, deep TypeScript inference, and conditional rules via `when`.
+Reactive, signal-native forms. Already graduated to `@publicApi 22.0` in this build. Zero `FormControl` boilerplate, deep TypeScript inference, and conditional rules via `when`.
 
 ```typescript
 import { form } from '@angular/forms/signals';
@@ -159,13 +159,13 @@ Navigate to `http://localhost:4200/` after starting the dev server.
 
 ---
 
-## Should You Use the Nightly Build?
+## Should You Use 22.1.0-next.6?
 
 **In production? Absolutely not.**
 
 **For learning, contributing to Angular, or just being curious about where the framework is headed? Be my guest.**
 
-The nightly build is how you stay ahead of the curve   you'll understand new APIs before the blog posts are written, you'll hit the bugs before everyone else does, and occasionally you'll find something that shapes how you think about building apps entirely.
+22.1.0-next.6 is how you stay ahead of the curve   you'll understand new APIs before the blog posts are written, you'll hit the bugs before everyone else does, and occasionally you'll find something that shapes how you think about building apps entirely.
 
 Just don't deploy it anywhere that matters.
 
@@ -176,10 +176,10 @@ Just don't deploy it anywhere that matters.
 - [Angular Stable Docs](https://angular.dev)
 - [Angular GitHub   `main` branch](https://github.com/angular/angular)
 - [Angular CLI Overview](https://angular.dev/tools/cli)
-- [Nightly Build Artifacts](https://github.com/angular/core-builds)
-- [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill)   Claude Code skill that automates switching any Angular project to the nightly build
+- [Build Artifacts](https://github.com/angular/core-builds)
+- [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill)   Claude Code skill that automates switching any Angular project to this build
 
-## The Nightly Build Skill
+## The Experimental Build Skill
 
-The [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill) is a Claude Code skill that automates the entire migration to Angular's nightly build   just say *"switch to nightly angular"* and it rewrites your `package.json`, handles pnpm quirks, upgrades TypeScript, and verifies the install.
+The [install-experimental-angular-skill](https://github.com/Arigatouz/install-experimental-angular-skill) is a Claude Code skill that automates the entire migration to Angular's experimental build   just say *"switch to experimental angular"* and it rewrites your `package.json`, handles pnpm quirks, upgrades TypeScript, and verifies the install.
 No manual editing, no hunting for the right GitHub artifact URLs   it does the heavy lifting so you can focus on exploring new APIs.
