@@ -19,6 +19,7 @@ export class App {
     // { path: '/about', label: 'About' },
     // { path: '/features', label: 'Features' },
     { path: '/examples', label: 'Examples' },
+    { path: '/editor', label: 'Editor' },
     // { path: '/contact', label: 'Contact' },
   ]);
 }

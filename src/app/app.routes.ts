@@ -22,6 +22,12 @@ export const routes: Routes = [
   { path: 'features', component: Features },
   { path: 'contact', component: Contact },
   {
+    path: 'editor',
+    loadComponent: async () =>
+      (await import('./component/features/form-builder/components/form-builder/form-builder'))
+        .FormBuilder,
+  },
+  {
     path: 'examples',
     component: Examples,
     children: [
