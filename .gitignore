@@ -47,4 +47,7 @@ Thumbs.db
 /.playwright-mcp
 
 
-
+.kiro
+.claude
+.agents
+.junie

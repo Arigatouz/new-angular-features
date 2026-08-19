@@ -1,7 +1,38 @@
+<!-- ── Tab Bar ──────────────────────────────────────────────────────────── -->
+<div class="flex gap-1 mb-6 p-1 bg-[#0d0d0d] rounded-xl border border-[#2d2d2d]">
+  <button
+    (click)="activeTab.set('httpResource')"
+    [class]="activeTab() === 'httpResource'
+      ? 'flex-1 px-3 py-2 text-xs font-mono rounded-lg bg-[#dd0031] text-white transition-colors'
+      : 'flex-1 px-3 py-2 text-xs font-mono rounded-lg text-[#a0a0a0] hover:text-white hover:bg-[#1a1a1a] transition-colors'"
+  >httpResource</button>
+  <button
+    (click)="activeTab.set('blob')"
+    [class]="activeTab() === 'blob'
+      ? 'flex-1 px-3 py-2 text-xs font-mono rounded-lg bg-[#dd0031] text-white transition-colors'
+      : 'flex-1 px-3 py-2 text-xs font-mono rounded-lg text-[#a0a0a0] hover:text-white hover:bg-[#1a1a1a] transition-colors'"
+  >.blob</button>
+  <button
+    (click)="activeTab.set('text')"
+    [class]="activeTab() === 'text'
+      ? 'flex-1 px-3 py-2 text-xs font-mono rounded-lg bg-[#dd0031] text-white transition-colors'
+      : 'flex-1 px-3 py-2 text-xs font-mono rounded-lg text-[#a0a0a0] hover:text-white hover:bg-[#1a1a1a] transition-colors'"
+  >.text</button>
+  <button
+    (click)="activeTab.set('arrayBuffer')"
+    [class]="activeTab() === 'arrayBuffer'
+      ? 'flex-1 px-3 py-2 text-xs font-mono rounded-lg bg-[#dd0031] text-white transition-colors'
+      : 'flex-1 px-3 py-2 text-xs font-mono rounded-lg text-[#a0a0a0] hover:text-white hover:bg-[#1a1a1a] transition-colors'"
+  >.arrayBuffer</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- TAB 1: httpResource (JSON) -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (activeTab() === 'httpResource') {
 <div>
   <div class="mb-6 flex items-center justify-between">
-    <span
-      class="inline-flex items-center gap-2 px-3 py-1 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-full text-[#dd0031] text-xs font-mono">
+    <span class="inline-flex items-center gap-2 px-3 py-1 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-full text-[#dd0031] text-xs font-mono">
       httpResource()
     </span>
     <button
@@ -16,51 +47,36 @@
     </button>
   </div>
 
-  <!-- Code Example -->
+  <!-- Code snippet -->
   <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
     <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
       <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
       <span class="text-[#dd0031] text-xs font-mono">&#64;angular/common/http</span>
     </div>
-    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span
-      class="text-[#569cd6]">import</span> <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">httpResource</span> <span
-      class="text-[#d4d4d4]">&#125;</span> <span class="text-[#569cd6]">from</span> <span class="text-[#ce9178]">'&#64;angular/common/http'</span><span
-      class="text-[#d4d4d4]">;</span>
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span class="text-[#569cd6]">import</span> <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">httpResource</span> <span class="text-[#d4d4d4]">&#125;</span> <span class="text-[#569cd6]">from</span> <span class="text-[#ce9178]">'&#64;angular/common/http'</span><span class="text-[#d4d4d4]">;</span>
 
-<span class="text-[#9cdcfe]">jokes</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">httpResource</span><span
-        class="text-[#d4d4d4]">&lt;</span><span class="text-[#4ec9b0]">Joke</span><span
-        class="text-[#d4d4d4]">[]&gt;(</span>
-  <span class="text-[#d4d4d4]">() =&gt;</span> <span class="text-[#ce9178]">'https://api.example.com/jokes'</span><span
-        class="text-[#d4d4d4]">,</span>
-  <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">defaultValue</span><span
-        class="text-[#d4d4d4]">:</span> <span class="text-[#d4d4d4]">[] &#125;,</span>
-<span class="text-[#d4d4d4]">);</span>
-
-<span class="text-[#6a9955]">// Reactive state signals</span>
-<span class="text-[#9cdcfe]">jokes</span><span class="text-[#d4d4d4]">.</span><span
-        class="text-[#dcdcaa]">isLoading</span><span class="text-[#d4d4d4]">()</span>  <span class="text-[#6a9955]">// boolean</span>
-<span class="text-[#9cdcfe]">jokes</span><span class="text-[#d4d4d4]">.</span><span
-        class="text-[#dcdcaa]">error</span><span class="text-[#d4d4d4]">()</span>      <span class="text-[#6a9955]">// HttpErrorResponse | undefined</span>
-<span class="text-[#9cdcfe]">jokes</span><span class="text-[#d4d4d4]">.</span><span
-        class="text-[#dcdcaa]">value</span><span class="text-[#d4d4d4]">()</span>      <span class="text-[#6a9955]">// Joke[] (defaultValue keeps it defined)</span>
-<span class="text-[#9cdcfe]">jokes</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">reload</span><span
-        class="text-[#d4d4d4]">()</span>     <span class="text-[#6a9955]">// manually refetch</span></code></pre>
+<span class="text-[#9cdcfe]">jokes</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">httpResource</span><span class="text-[#d4d4d4]">&lt;</span><span class="text-[#4ec9b0]">Joke</span><span class="text-[#d4d4d4]">[]&gt;(</span>
+  <span class="text-[#d4d4d4]">() =&gt;</span> <span class="text-[#ce9178]">'https://api.example.com/jokes'</span><span class="text-[#d4d4d4]">,</span>
+  <span class="text-[#d4d4d4]">&#123;</span> <span class="text-[#9cdcfe]">defaultValue</span><span class="text-[#d4d4d4]">:</span> <span class="text-[#d4d4d4]">[] &#125;,</span>
+<span class="text-[#d4d4d4]">);</span></code></pre>
   </div>
-  <select #select (change)="limit.set(+select.value)">
+
+  <select #select (change)="limit.set(+select.value)" class="mb-4 px-3 py-2 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm focus:outline-none focus:border-[#dd0031]/50">
     <option value="3">3 jokes</option>
     <option value="5">5 jokes</option>
     <option value="10">10 jokes</option>
   </select>
+
   <div class="relative">
     @if (jokes.isLoading()) {
-      <div class="fixed inset-0 p-4 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-lg text-[#dd0031] text-sm">
-     <span class="inline-flex items-center gap-2">
-        <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-        </svg>
-        Loading jokes...
-      </span>
+      <div class="p-4 bg-[#dd0031]/10 border border-[#dd0031]/30 rounded-lg text-[#dd0031] text-sm">
+        <span class="inline-flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Loading jokes...
+        </span>
       </div>
     }
     @if (jokes.error()) {
@@ -87,77 +103,371 @@
       </div>
     }
   </div>
-</div>
 
-<!-- ── httpResource() with search query params: Chuck Norris ──────── -->
-<div class="mt-10 pt-8 border-t border-[#2d2d2d]">
-  <div class="mb-6 flex items-center justify-between">
-    <span
-      class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-mono">
-      httpResource() + search params
-    </span>
-    @if (chuckNorrisResource.hasValue()) {
+  <!-- Chuck Norris search ─────────────────────────────────── -->
+  <div class="mt-10 pt-8 border-t border-[#2d2d2d]">
+    <div class="mb-6 flex items-center justify-between">
+      <span class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-mono">
+        httpResource() + search params
+      </span>
+      @if (chuckNorrisResource.hasValue()) {
+        <span class="text-[#a0a0a0] text-xs font-mono">{{ chuckNorrisResource.value().total }} results</span>
+      }
+    </div>
 
-      <span class="text-[#a0a0a0] text-xs font-mono">
-      {{ chuckNorrisResource.value().total }} results
-    </span>
+    <input
+      #searchInput
+      type="text"
+      placeholder="Search Chuck Norris jokes... (e.g. dog, coding, gym)"
+      (input)="onSearchInput(searchInput.value)"
+      class="w-full mb-4 px-4 py-2.5 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-amber-500/50 transition-colors"
+    />
+
+    @if (searchQuery().trim().length < 3) {
+      <div class="flex items-center justify-center py-16 text-[#a0a0a0] text-sm">
+        Type at least 3 characters to search.
+      </div>
+    } @else if (chuckNorrisResource.isLoading()) {
+      <div class="flex items-center justify-center py-16">
+        <div class="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+        <span class="ml-3 text-[#a0a0a0]">Searching...</span>
+      </div>
+    } @else if (chuckNorrisResource.error()) {
+      <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400 text-sm">
+        Error: {{ chuckNorrisResource.error()?.message }}
+      </div>
+    } @else {
+      <div class="space-y-3">
+        @for (joke of chuckNorrisResource.value().result; track joke.id) {
+          <div class="bg-[#111] rounded-xl border border-[#2d2d2d] p-5 hover:border-amber-500/40 transition-colors">
+            <div class="flex items-start gap-4">
+              <img [src]="joke.icon_url" alt="" class="w-9 h-9 rounded-lg shrink-0" />
+              <p class="text-white text-sm">{{ joke.value }}</p>
+            </div>
+          </div>
+        } @empty {
+          <div class="text-center py-12 text-[#888]">No jokes matched "{{ searchQuery() }}".</div>
+        }
+      </div>
     }
   </div>
+</div>
+}
 
-  <!-- Code Example -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- TAB 2: httpResource.blob -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (activeTab() === 'blob') {
+<div>
+  <div class="mb-6 flex items-center justify-between">
+    <span class="inline-flex items-center gap-2 px-3 py-1 bg-violet-500/10 border border-violet-500/30 rounded-full text-violet-400 text-xs font-mono">
+      httpResource.blob()
+    </span>
+    <button
+      (click)="blobResource.reload()"
+      class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d] flex items-center gap-2"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Reload
+    </button>
+  </div>
+
+  <!-- Code snippet -->
   <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
     <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
       <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
-      <span class="text-amber-400 text-xs font-mono">api.chucknorris.io/jokes/search?query=</span>
+      <span class="text-violet-400 text-xs font-mono">httpResource.blob</span>
     </div>
-    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span
-      class="text-[#9cdcfe]">chuckNorrisResource</span> <span class="text-[#d4d4d4]">=</span> <span
-      class="text-[#dcdcaa]">httpResource</span><span class="text-[#d4d4d4]">(() =&gt; &#123;</span>
-  <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">trimmed</span> <span
-        class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">query</span><span
-        class="text-[#d4d4d4]">().</span><span class="text-[#dcdcaa]">trim</span><span class="text-[#d4d4d4]">();</span>
-  <span class="text-[#6a9955]">// API 400s under 3 chars — return undefined to keep the resource idle</span>
-  <span class="text-[#569cd6]">return</span> <span class="text-[#9cdcfe]">trimmed</span><span class="text-[#d4d4d4]">.length</span> <span
-        class="text-[#d4d4d4]">&gt;=</span> <span class="text-[#b5cea8]">3</span>
-    <span class="text-[#d4d4d4]">?</span> <span class="text-[#ce9178]">`https://api.chucknorris.io/jokes/search?query=$&#123;trimmed&#125;`</span>
-    <span class="text-[#d4d4d4]">: undefined;</span>
-<span class="text-[#d4d4d4]">&#125;, &#123;</span> <span class="text-[#9cdcfe]">defaultValue</span><span
-        class="text-[#d4d4d4]">:</span> <span class="text-[#d4d4d4]">&#123; total: 0, result: [] &#125; &#125;);</span></code></pre>
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span class="text-[#6a9955]">// width/height signals drive reactive refetching</span>
+<span class="text-[#9cdcfe]">blobWidth</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">signal</span><span class="text-[#d4d4d4]">(</span><span class="text-[#b5cea8]">300</span><span class="text-[#d4d4d4]">);</span>
+<span class="text-[#9cdcfe]">blobHeight</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">signal</span><span class="text-[#d4d4d4]">(</span><span class="text-[#b5cea8]">200</span><span class="text-[#d4d4d4]">);</span>
+<span class="text-[#9cdcfe]">blobResource</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">httpResource</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">blob</span><span class="text-[#d4d4d4]">(() =&gt;</span>
+  <span class="text-[#ce9178]">`https://picsum.photos/<span class="text-[#9cdcfe]">&#36;&#123;blobWidth()&#125;</span>/<span class="text-[#9cdcfe]">&#36;&#123;blobHeight()&#125;</span>`</span>
+<span class="text-[#d4d4d4]">);</span>
+
+<span class="text-[#6a9955]">// Revoke each object URL on cleanup — not doing so leaks one per reload</span>
+<span class="text-[#dcdcaa]">effect</span><span class="text-[#d4d4d4]">((</span><span class="text-[#9cdcfe]">onCleanup</span><span class="text-[#d4d4d4]">) =&gt; &#123;</span>
+  <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">blob</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">blobResource</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">value</span><span class="text-[#d4d4d4]">();</span>
+  <span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">url</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">blob</span> <span class="text-[#d4d4d4]">?</span> <span class="text-[#4ec9b0]">URL</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">createObjectURL</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">blob</span><span class="text-[#d4d4d4]">) :</span> <span class="text-[#569cd6]">null</span><span class="text-[#d4d4d4]">;</span>
+  <span class="text-[#9cdcfe]">blobUrl</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">set</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">url</span><span class="text-[#d4d4d4]">);</span>
+  <span class="text-[#9cdcfe]">onCleanup</span><span class="text-[#d4d4d4]">(() =&gt; url &amp;&amp;</span> <span class="text-[#4ec9b0]">URL</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">revokeObjectURL</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">url</span><span class="text-[#d4d4d4]">));</span>
+<span class="text-[#d4d4d4]">&#125;);</span></code></pre>
   </div>
 
-  <input
-    #searchInput
-    type="text"
-    placeholder="Search Chuck Norris jokes... (e.g. dog, coding, gym)"
-    (input)="onSearchInput(searchInput.value)"
-    class="w-full mb-4 px-4 py-2.5 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-amber-500/50 transition-colors"
-  />
+  <!-- Reactive controls -->
+  <div class="mb-6 flex flex-wrap gap-4">
+    <label class="flex flex-col gap-1">
+      <span class="text-[#888] text-xs font-mono">width</span>
+      <select
+        #widthSelect
+        (change)="blobWidth.set(+widthSelect.value)"
+        class="px-3 py-2 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm focus:outline-none focus:border-violet-500/50"
+      >
+        <option value="200">200 px</option>
+        <option value="300" selected>300 px</option>
+        <option value="400">400 px</option>
+        <option value="600">600 px</option>
+      </select>
+    </label>
+    <label class="flex flex-col gap-1">
+      <span class="text-[#888] text-xs font-mono">height</span>
+      <select
+        #heightSelect
+        (change)="blobHeight.set(+heightSelect.value)"
+        class="px-3 py-2 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm focus:outline-none focus:border-violet-500/50"
+      >
+        <option value="150">150 px</option>
+        <option value="200" selected>200 px</option>
+        <option value="300">300 px</option>
+        <option value="400">400 px</option>
+      </select>
+    </label>
+  </div>
 
-  @if (searchQuery().trim().length < 3) {
-    <div class="flex items-center justify-center py-16 text-[#a0a0a0] text-sm">
-      Type at least 3 characters to search (the API rejects shorter queries).
-    </div>
-  } @else if (chuckNorrisResource.isLoading()) {
+  @if (blobResource.isLoading()) {
     <div class="flex items-center justify-center py-16">
-      <div class="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-      <span class="ml-3 text-[#a0a0a0]">Searching...</span>
+      <div class="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+      <span class="ml-3 text-[#a0a0a0] text-sm">Fetching image blob...</span>
     </div>
-  } @else if (chuckNorrisResource.error()) {
-    <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400 text-sm">
-      Error: {{ chuckNorrisResource.error()?.message }}
+  } @else if (blobResource.error()) {
+    <div class="p-4 bg-violet-500/10 border border-violet-500/30 rounded-lg text-violet-400 text-sm">
+      Error: {{ blobResource.error()?.message }}
     </div>
-  } @else {
-    <div class="space-y-3">
-      @for (joke of chuckNorrisResource.value().result; track joke.id) {
-        <div class="bg-[#111] rounded-xl border border-[#2d2d2d] p-5 hover:border-amber-500/40 transition-colors">
-          <div class="flex items-start gap-4">
-            <img [src]="joke.icon_url" alt="" class="w-9 h-9 rounded-lg shrink-0" />
-            <p class="text-white text-sm">{{ joke.value }}</p>
-          </div>
+  } @else if (blobUrl()) {
+    <div class="space-y-4">
+      <div class="rounded-xl overflow-hidden border border-[#2d2d2d] inline-block">
+        <img [src]="blobUrl()!" alt="Random image from picsum.photos" class="block" />
+      </div>
+      <div class="p-4 bg-[#111] rounded-xl border border-[#2d2d2d] text-sm space-y-1">
+        <div class="flex gap-3">
+          <span class="text-[#888] w-24 shrink-0">Type</span>
+          <span class="text-violet-300 font-mono">{{ blobResource.value()!.type || 'image/jpeg' }}</span>
         </div>
-      } @empty {
-        <div class="text-center py-12 text-[#888]">No jokes matched "{{ searchQuery() }}".</div>
+        <div class="flex gap-3">
+          <span class="text-[#888] w-24 shrink-0">Size</span>
+          <span class="text-violet-300 font-mono">{{ (blobResource.value()!.size / 1024).toFixed(1) }} KB</span>
+        </div>
+        <div class="flex gap-3">
+          <span class="text-[#888] w-24 shrink-0">Dimensions</span>
+          <span class="text-violet-300 font-mono">{{ blobWidth() }} × {{ blobHeight() }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+}
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- TAB 3: httpResource.text -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (activeTab() === 'text') {
+<div>
+  <div class="mb-6 flex items-center justify-between">
+    <span class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs font-mono">
+      httpResource.text()
+    </span>
+    <button
+      (click)="textResource.reload()"
+      class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d] flex items-center gap-2"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Reload
+    </button>
+  </div>
+
+  <!-- Code snippet -->
+  <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
+    <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
+      <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
+      <span class="text-emerald-400 text-xs font-mono">httpResource.text</span>
+    </div>
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span class="text-[#6a9955]">// type + paragraphs signals refetch automatically when changed</span>
+<span class="text-[#9cdcfe]">textType</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">signal</span><span class="text-[#d4d4d4]">&lt;</span><span class="text-[#ce9178]">'meat-and-filler'</span> <span class="text-[#d4d4d4]">|</span> <span class="text-[#ce9178]">'all-meat'</span><span class="text-[#d4d4d4]">&gt;(</span><span class="text-[#ce9178]">'meat-and-filler'</span><span class="text-[#d4d4d4]">);</span>
+<span class="text-[#9cdcfe]">textParagraphs</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#dcdcaa]">signal</span><span class="text-[#d4d4d4]">(</span><span class="text-[#b5cea8]">1</span><span class="text-[#d4d4d4]">);</span>
+<span class="text-[#9cdcfe]">textResource</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">httpResource</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">text</span><span class="text-[#d4d4d4]">(() =&gt;</span>
+  <span class="text-[#ce9178]">`https://baconipsum.com/api/?type=<span class="text-[#9cdcfe]">&#36;&#123;textType()&#125;</span>&amp;paras=<span class="text-[#9cdcfe]">&#36;&#123;textParagraphs()&#125;</span>&amp;format=text`</span>
+<span class="text-[#d4d4d4]">);</span>
+
+<span class="text-[#6a9955]">// value() is string | undefined — no JSON.parse needed</span>
+<span class="text-[#9cdcfe]">textResource</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">value</span><span class="text-[#d4d4d4]">()</span></code></pre>
+  </div>
+
+  <!-- Reactive controls -->
+  <div class="mb-6 flex flex-wrap gap-4">
+    <label class="flex flex-col gap-1">
+      <span class="text-[#888] text-xs font-mono">type</span>
+      <select
+        #typeSelect
+        (change)="textType.set(typeSelect.value === 'all-meat' ? 'all-meat' : 'meat-and-filler')"
+        class="px-3 py-2 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500/50"
+      >
+        <option value="meat-and-filler" selected>meat-and-filler</option>
+        <option value="all-meat">all-meat</option>
+      </select>
+    </label>
+    <label class="flex flex-col gap-1">
+      <span class="text-[#888] text-xs font-mono">paragraphs</span>
+      <select
+        #parasSelect
+        (change)="textParagraphs.set(+parasSelect.value)"
+        class="px-3 py-2 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500/50"
+      >
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+      </select>
+    </label>
+  </div>
+
+  @if (textResource.isLoading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <span class="ml-3 text-[#a0a0a0] text-sm">Fetching text...</span>
+    </div>
+  } @else if (textResource.error()) {
+    <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-400 text-sm">
+      Error: {{ textResource.error()?.message }}
+    </div>
+  } @else if (textResource.value()) {
+    <div class="p-5 bg-[#111] rounded-xl border border-[#2d2d2d]">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-emerald-400 text-xs font-mono">text/plain response</span>
+        <span class="text-[#444] text-xs">·</span>
+        <span class="text-[#888] text-xs">{{ textType() }} · {{ textParagraphs() }} para{{ textParagraphs() > 1 ? 's' : '' }} · {{ textResource.value()!.length }} chars</span>
+      </div>
+      <p class="text-[#d4d4d4] text-sm leading-relaxed whitespace-pre-wrap font-mono">{{ textResource.value() }}</p>
+    </div>
+  }
+</div>
+}
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- TAB 4: httpResource.arrayBuffer -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (activeTab() === 'arrayBuffer') {
+<div>
+  <div class="mb-6 flex items-center justify-between">
+    <span class="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-400 text-xs font-mono">
+      httpResource.arrayBuffer()
+    </span>
+    <button
+      (click)="arrayBufferResource.reload()"
+      class="px-3 py-1.5 bg-[#2d2d2d] text-white text-xs font-medium rounded-lg hover:bg-[#3d3d3d] transition-colors border border-[#3d3d3d] flex items-center gap-2"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Reload
+    </button>
+  </div>
+
+  <!-- Code snippet -->
+  <div class="mb-6 rounded-xl overflow-hidden border border-[#2d2d2d]">
+    <div class="flex items-center justify-between px-4 py-2 bg-[#111] border-b border-[#2d2d2d]">
+      <span class="text-[#a0a0a0] text-xs font-medium">Code Example</span>
+      <span class="text-sky-400 text-xs font-mono">httpResource.arrayBuffer</span>
+    </div>
+    <pre class="p-4 bg-[#0d0d0d] text-sm leading-relaxed overflow-x-auto"><code><span class="text-[#6a9955]">// audioUrl signal picks the sound and refetches the bytes automatically</span>
+<span class="text-[#9cdcfe]">arrayBufferResource</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">httpResource</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">arrayBuffer</span><span class="text-[#d4d4d4]">(() =&gt;</span> <span class="text-[#9cdcfe]">audioUrl</span><span class="text-[#d4d4d4]">());</span>
+
+<span class="text-[#6a9955]">// decodeAudioData needs an ArrayBuffer, not a Blob. Decode a copy</span>
+<span class="text-[#6a9955]">// because decodeAudioData detaches the buffer it receives.</span>
+<span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">audio</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#569cd6]">await</span> <span class="text-[#9cdcfe]">ctx</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">decodeAudioData</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">buffer</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">slice</span><span class="text-[#d4d4d4]">(</span><span class="text-[#b5cea8]">0</span><span class="text-[#d4d4d4]">));</span>
+
+<span class="text-[#6a9955]">// play() runs on a click; the gesture unlocks the AudioContext</span>
+<span class="text-[#569cd6]">const</span> <span class="text-[#9cdcfe]">src</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">ctx</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">createBufferSource</span><span class="text-[#d4d4d4]">();</span>
+<span class="text-[#9cdcfe]">src</span><span class="text-[#d4d4d4]">.</span><span class="text-[#9cdcfe]">buffer</span> <span class="text-[#d4d4d4]">=</span> <span class="text-[#9cdcfe]">audio</span><span class="text-[#d4d4d4]">;</span> <span class="text-[#9cdcfe]">src</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">connect</span><span class="text-[#d4d4d4]">(</span><span class="text-[#9cdcfe]">ctx</span><span class="text-[#d4d4d4]">.</span><span class="text-[#9cdcfe]">destination</span><span class="text-[#d4d4d4]">);</span> <span class="text-[#9cdcfe]">src</span><span class="text-[#d4d4d4]">.</span><span class="text-[#dcdcaa]">start</span><span class="text-[#d4d4d4]">();</span></code></pre>
+  </div>
+
+  <!-- Reactive control: pick which sound to fetch -->
+  <div class="mb-6">
+    <label class="flex flex-col gap-1">
+      <span class="text-[#888] text-xs font-mono">sound file</span>
+      <select
+        #audioSelect
+        (change)="audioUrl.set(audioSelect.value)"
+        class="px-3 py-2 bg-[#111] border border-[#2d2d2d] rounded-lg text-white text-sm focus:outline-none focus:border-sky-500/50 w-fit"
+      >
+        @for (f of audioFiles; track f.value) {
+          <option [value]="f.value">{{ f.label }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  @if (arrayBufferResource.isLoading()) {
+    <div class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+      <span class="ml-3 text-[#a0a0a0] text-sm">Fetching audio bytes...</span>
+    </div>
+  } @else if (arrayBufferResource.error()) {
+    <div class="p-4 bg-sky-500/10 border border-sky-500/30 rounded-lg text-sky-400 text-sm">
+      Error: {{ arrayBufferResource.error()?.message }}
+    </div>
+  } @else if (fetchedBytes() !== null) {
+    <div class="space-y-4">
+      <!-- Raw bytes fetched -->
+      <div class="p-5 bg-[#111] rounded-xl border border-[#2d2d2d]">
+        <div class="flex gap-3 text-sm">
+          <span class="text-[#888] w-28 shrink-0">bytes fetched</span>
+          <span class="text-sky-300 font-mono">{{ fetchedBytes() }} bytes ({{ (fetchedBytes()! / 1024).toFixed(1) }} KB)</span>
+        </div>
+      </div>
+
+      @if (decodeError()) {
+        <div class="p-4 bg-sky-500/10 border border-sky-500/30 rounded-lg text-sky-400 text-sm">
+          Decode failed: {{ decodeError() }}
+        </div>
+      } @else if (audioMeta(); as meta) {
+        <!-- Decoded audio -->
+        <div class="p-5 bg-[#111] rounded-xl border border-sky-500/30">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-sky-400 text-xs font-mono">decodeAudioData() result</span>
+            <button
+              (click)="play()"
+              class="px-4 py-2 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-400 transition-colors flex items-center gap-2"
+            >
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"></path>
+              </svg>
+              {{ isPlaying() ? 'Playing...' : 'Play sound' }}
+            </button>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex gap-3">
+              <span class="text-[#888] w-28 shrink-0">duration</span>
+              <span class="text-sky-300 font-mono">{{ meta.duration.toFixed(2) }} s</span>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-[#888] w-28 shrink-0">channels</span>
+              <span class="text-sky-300 font-mono">{{ meta.channels }}</span>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-[#888] w-28 shrink-0">sampleRate</span>
+              <span class="text-sky-300 font-mono">{{ meta.sampleRate }} Hz</span>
+            </div>
+          </div>
+          <p class="mt-4 text-[#666] text-xs leading-relaxed">
+            decodeAudioData() takes a <span class="text-[#a0a0a0]">BufferSource</span> and refuses a
+            <span class="text-[#a0a0a0]">Blob</span>, which is why <span class="text-[#a0a0a0]">arrayBuffer()</span>
+            is the right fetch here, not <span class="text-[#a0a0a0]">blob()</span>.
+          </p>
+        </div>
+      } @else {
+        <div class="flex items-center gap-2 text-[#a0a0a0] text-sm">
+          <div class="w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+          Decoding audio...
+        </div>
       }
     </div>
   }
 </div>
+}

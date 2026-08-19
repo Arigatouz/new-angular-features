@@ -59,7 +59,7 @@ export class HttpDemoService {
   };
 
   httpResourceGetChuckNorrisWithSearch = (query: Signal<string>) => {
-    const debouncedSearchQuery = debounced(query, 500 );
+    const debouncedSearchQuery = debounced(query, 500);
     return httpResource<ChuckNorrisSearchResult>(
       () => {
         const trimmed = debouncedSearchQuery.value().trim();
@@ -71,4 +71,25 @@ export class HttpDemoService {
       },
     );
   };
+
+  // picsum.photos only sends Access-Control-Allow-Origin when an Origin header
+  // is present (conditional CORS) - curl without one looks like it's missing,
+  // but browsers always send Origin cross-origin, so this works from the app.
+  // width/height signals drive reactive refetching when dimensions change.
+  httpResourceWithBlob = (width: Signal<number>, height: Signal<number>) =>
+    httpResource.blob(() => `https://picsum.photos/${width()}/${height()}`);
+
+  // baconipsum returns real text/plain with Access-Control-Allow-Origin: *
+  // type and paragraphs signals let the user change the content reactively.
+  httpResourceWithText = (type: Signal<'meat-and-filler' | 'all-meat'>, paragraphs: Signal<number>) =>
+    httpResource.text(
+      () =>
+        `https://baconipsum.com/api/?type=${type()}&paras=${paragraphs()}&format=text`,
+    );
+
+  // arrayBuffer earns its keep here: AudioContext.decodeAudioData() takes a
+  // BufferSource and refuses a Blob, so raw bytes are exactly what we want.
+  // The audioUrl signal lets the user switch sounds and refetches automatically.
+  httpResourceWithArrayBuffer = (audioUrl: Signal<string>) =>
+    httpResource.arrayBuffer(() => audioUrl());
 }
