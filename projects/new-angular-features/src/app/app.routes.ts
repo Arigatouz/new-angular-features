@@ -28,6 +28,10 @@ export const routes: Routes = [
         .FormBuilder,
   },
   {
+    path: 'opper-ai',
+    loadComponent: async () => (await import('./component/features/opper-ai/opper-ai')).OpperAi,
+  },
+  {
     path: 'examples',
     component: Examples,
     children: [

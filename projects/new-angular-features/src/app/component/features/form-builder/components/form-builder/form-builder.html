@@ -1,0 +1,27 @@
+<div class="editor-page">
+  <div class="editor-header">
+    <h1 class="editor-title">Rich Text Editor</h1>
+    <p class="editor-subtitle">Select text and use the toolbar to format your content.</p>
+  </div>
+
+  <div class="editor-container">
+    <div class="toolbar">
+      @for (entry of commandEntries; track entry[0]) {
+        <button
+          type="button"
+          class="toolbar-button"
+          [class.is-active]="activeCommands().has(entry[0])"
+          [attr.aria-pressed]="activeCommands().has(entry[0])"
+          (click)="runCommand(entry[0])"
+        >
+          {{ entry[1].label }}
+        </button>
+      }
+    </div>
+    <div #editor class="editor"></div>
+  </div>
+</div>
+
+
+<div #id contenteditable="true" ></div>
+

@@ -20,6 +20,7 @@ export class App {
     // { path: '/features', label: 'Features' },
     { path: '/examples', label: 'Examples' },
     { path: '/editor', label: 'Editor' },
+    { path: '/opper-ai', label: 'Opper AI' },
     // { path: '/contact', label: 'Contact' },
   ]);
 }
