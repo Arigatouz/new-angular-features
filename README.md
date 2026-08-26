@@ -108,7 +108,7 @@ Expose Angular services and Signal Forms as AI-callable tools via the Web Model 
 import { provideExperimentalWebMcpTools, declareExperimentalWebMcpTool } from '@angular/core';
 import { provideExperimentalWebMcpForms } from '@angular/forms/signals';
 
-// In main.ts
+// In mainapp.ts
 bootstrapApplication(AppComponent, {
   providers: [
     provideExperimentalWebMcpTools([]),
