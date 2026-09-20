@@ -6,6 +6,8 @@ import {
   OnDestroy,
   viewChild,
   CUSTOM_ELEMENTS_SCHEMA,
+  inject,
+  ViewContainerRef,
 } from '@angular/core';
 import React, { createElement, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
@@ -119,7 +121,6 @@ export const ReactCounterAdapter: ForeignComponent = &#123;
 export class ReactTab implements OnDestroy {
   private readonly reactHost = viewChild.required<ElementRef<HTMLElement>>('reactHost');
   private root: Root | null = null;
-
   constructor() {
     afterNextRender(() => {
       this.root = createRoot(this.reactHost().nativeElement);

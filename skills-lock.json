@@ -67,6 +67,12 @@
       "skillPath": "skills/copilotkit-upgrade/SKILL.md",
       "computedHash": "2e5ad642cd45292425a49f5bcd81061217940dc45a7ecabc04a78222d9c9f243"
     },
+    "gemini-interactions-api": {
+      "source": "google-gemini/gemini-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gemini-interactions-api/SKILL.md",
+      "computedHash": "cb9c3791edc8ed3eab035e3a4d41ecd2eea1bab9edfdc2f955b51afefbaec8c2"
+    },
     "react-core": {
       "source": "CopilotKit/CopilotKit",
       "sourceType": "github",

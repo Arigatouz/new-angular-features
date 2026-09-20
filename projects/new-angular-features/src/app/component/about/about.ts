@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { pattern } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-about',
@@ -7,4 +9,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './about.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class About {}
+export class About {
+  nnfb = inject(NonNullableFormBuilder);
+
+  form = this.nnfb.group({
+    whatEver: this.nnfb.control('', {validators:Validators.pattern(/^[a-zA-Z]+$/)})
+  })
+}
