@@ -53,3 +53,10 @@ Thumbs.db
 .agents
 .junie
 .env
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/projects/e2e/test-results/
+/projects/e2e/playwright-report/

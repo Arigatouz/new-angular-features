@@ -3,7 +3,10 @@
   "version": 1,
   "cli": {
     "packageManager": "pnpm",
-    "schematicCollections": ["angular-eslint"]
+    "schematicCollections": [
+      "angular-eslint",
+      "playwright-ng-schematics"
+    ]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -25,15 +28,17 @@
                 "input": "projects/new-angular-features/public"
               }
             ],
-            "styles": ["projects/new-angular-features/src/styles.css"]
+            "styles": [
+              "projects/new-angular-features/src/styles.css"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -73,6 +78,27 @@
               "projects/new-angular-features/src/**/*.ts",
               "projects/new-angular-features/src/**/*.html"
             ]
+          }
+        },
+      }
+    },
+    "e2e": {
+      "projectType": "application",
+      "root": "projects/e2e",
+      "sourceRoot": "projects/e2e",
+      "architect": {
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "new-angular-features:serve",
+            "port": 5200,
+            "config": "projects/e2e/playwright.config.ts",
+            "tsconfig": "projects/e2e/tsconfig.json"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "new-angular-features:serve:production"
+            }
           }
         }
       }

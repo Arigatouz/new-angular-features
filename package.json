@@ -12,6 +12,8 @@
     "watch": "ng build new-angular-features --watch --configuration development",
     "test": "ng test new-angular-features",
     "test:new-angular-features": "ng test new-angular-features",
+    "e2e": "ng run e2e:e2e",
+    "e2e:prod": "ng run e2e:e2e:production",
     "lint": "ng lint new-angular-features",
     "lint:new-angular-features": "ng lint new-angular-features"
   },
